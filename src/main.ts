@@ -457,7 +457,7 @@ function renderDetail() {
   <div class="detail-tabs" role="tablist"><button id="tab-overview" class="active" role="tab" aria-controls="tab-panel" aria-selected="true" data-tab="overview">01 <span>正文</span></button><button id="tab-notes" role="tab" aria-controls="tab-panel" aria-selected="false" data-tab="notes">02 <span>目录</span></button><button id="tab-history" role="tab" aria-controls="tab-panel" aria-selected="false" data-tab="history">03 <span>相关文章</span></button><i class="tab-indicator" aria-hidden="true"></i></div>
   <div id="tab-panel" class="tab-panel" role="tabpanel">${overview()}</div>
   <div class="detail-actions"><a class="solid-button" href="${escapeHtml(r.source)}" aria-label="查看文章">VIEW<span>查看</span></a><button class="export-button" data-action="copy-link" aria-label="复制文件链接">复制链接</button></div>
-  <div class="detail-footnote"><a href="/blog/">全部文章 ↗</a><span>${String(selected + 1).padStart(3, "0")} / ${String(records.length).padStart(3, "0")}</span></div>`;
+  <div class="detail-footnote"><span>${String(selected + 1).padStart(3, "0")} / ${String(records.length).padStart(3, "0")}</span></div>`;
   $("#detail-content").scrollTop = 0;
   $("#detail-content").setAttribute("tabindex", "-1");
   documentDecryption.reset($("#detail-content"), prefs.reduced || scene.decryptionFrame.phase === "clear");
