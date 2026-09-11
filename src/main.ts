@@ -32,10 +32,12 @@ import {
   createMotionPreferences,
   fullMotion,
   motionEnabled,
+  motionPresetFor,
   motionSettingsMarkup,
   motionSummary,
   reducedMotion,
   type MotionKey,
+  type MotionPreset,
   type StoredMotion,
 } from "./motion-preferences";
 import { StartupGate } from "./startup";
@@ -146,7 +148,7 @@ const saved = new Set<string>(readLocal<string[]>("rndyt-blog-saved", []));
 const storedPrefs = readLocal<Partial<{ sound: boolean; music: boolean; soundVolume: number; musicVolume: number; reduced: boolean; quality: boolean; rendering: RenderQuality; motion: StoredMotion; motionPreset: "system" | "full" | "reduced" | "custom" }>>("rndyt-blog-settings", {});
 const motionMedia = matchMedia("(prefers-reduced-motion: reduce)");
 let systemReduced = motionMedia.matches;
-let initialMotionPreset = storedPrefs.motionPreset ?? storedPrefs.motion?.preset
+let initialMotionPreset: MotionPreset = storedPrefs.motionPreset ?? storedPrefs.motion?.preset
   ?? (storedPrefs.motion ? "custom" : storedPrefs.reduced === undefined ? (systemReduced ? "system" : "full") : storedPrefs.reduced ? "reduced" : "full");
 const initialMotion = createMotionPreferences(initialMotionPreset === "system" ? undefined : storedPrefs.motion, storedPrefs.reduced, systemReduced);
 if (initialMotionPreset === "full" && !Object.values(initialMotion).every(Boolean)) initialMotionPreset = "custom";
@@ -157,18 +159,10 @@ const prefs = {
   soundVolume: storedPrefs.soundVolume ?? .55,
   musicVolume: storedPrefs.musicVolume ?? .5,
   motion: initialMotion,
-  motionPreset: initialMotionPreset as "system" | "full" | "reduced" | "custom",
+  motionPreset: initialMotionPreset,
   quality: storedPrefs.quality ?? true,
   rendering: normalizeQuality(storedPrefs.rendering, storedPrefs.quality !== false),
 };
-motionMedia.addEventListener("change", (event) => {
-  systemReduced = event.matches;
-  if (prefs.motionPreset === "system") {
-    prefs.motion = createMotionPreferences(undefined, undefined, systemReduced);
-    savePrefs();
-    if (modal === "settings") renderModal();
-  }
-});
 const motionActive = (key: MotionKey) => motionEnabled(prefs.motion, key);
 const motionIsReduced = () => Object.values(prefs.motion).every((value) => !value);
 const rollingMotion = {
@@ -252,11 +246,12 @@ function saveAudioPrefs() {
 }
 function savePrefs() {
   saveAudioPrefs();
-  if (motionIsReduced()) {
-    rollingTitles.forEach(title => title.finish());
-    detailTransition.finish();
+  if (!motionActive("rollingText")) rollingTitles.forEach(title => title.finish());
+  if (!motionActive("rollingNumbers")) [fileCounter, columnCounter, selectedCode, hoverCode].forEach(counter => counter.finish());
+  if (!motionActive("detailTransition")) detailTransition.finish();
+  if (!motionActive("surfaceTransitions")) {
     modalTransition?.finish();
-    tabTransition.cancel();
+    tabTransition.finish();
   }
   scene?.setMotion(prefs.motion);
   scene?.setQuality(prefs.rendering);
@@ -690,7 +685,7 @@ document.addEventListener("change", (e) => {
   if (el.dataset.motion) {
     const key = el.dataset.motion as MotionKey;
     prefs.motion[key] = el.checked;
-    prefs.motionPreset = "custom";
+    prefs.motionPreset = motionPresetFor(prefs.motion);
     savePrefs();
     const motionRoot = $("#motion-settings");
     const settingsPanel = motionRoot.closest<HTMLElement>(".settings-modal");
@@ -701,6 +696,7 @@ document.addEventListener("change", (e) => {
       if (settingsPanel) settingsPanel.scrollTop = scrollTop;
       document.querySelector<HTMLInputElement>(`[data-motion="${key}"]`)?.focus({ preventScroll: true });
     });
+    notify(key === "boot" ? "开场设置将在下次重播时生效" : el.checked ? "已启用此动画" : "已关闭此动画");
     audio.play("confirm");
   }
 });
@@ -709,6 +705,21 @@ document.addEventListener("click", (e) => {
   if (modalClosing) return;
   const el = (e.target as Element).closest<HTMLElement>("button");
   if (!el) return;
+  if (el.dataset.action === "motion-preset") {
+    const preset = el.dataset.preset;
+    if (preset !== "system" && preset !== "full" && preset !== "reduced") return;
+    prefs.motionPreset = preset;
+    prefs.motion = preset === "full"
+      ? fullMotion()
+      : preset === "reduced"
+        ? reducedMotion()
+        : createMotionPreferences(undefined, undefined, systemReduced);
+    savePrefs();
+    renderModal();
+    requestAnimationFrame(() => document.querySelector<HTMLButtonElement>(`[data-action="motion-preset"][data-preset="${prefs.motionPreset}"]`)?.focus({ preventScroll: true }));
+    audio.play("confirm");
+    return;
+  }
   if (el.dataset.heading) {
     const id = el.dataset.heading;
     setTab("overview");
@@ -1154,7 +1165,7 @@ Object.assign(window, {
       mode,
       ready,
       startup: started ? "started" : entry?.phase ?? "loading",
-      motion: { reduced: motionIsReduced(), preset: prefs.motionPreset, systemReduced },
+      motion: { reduced: motionIsReduced(), preset: prefs.motionPreset },
       bootTime: mode === "boot" ? started ? (frozenTime ?? performance.now() / 1000 - bootStart) + 5 : 6.76 : null,
       selected: records[selected].id,
       saved: [...saved],
