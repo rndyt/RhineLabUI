@@ -12,7 +12,7 @@ import { applyTextureQuality, resizeQuality } from "./quality-renderer";
 import { CardAppearance } from "./appearance";
 import { configureInternalOptics } from "./internal-optics";
 import { DecryptionController } from "./decryption";
-import { fileAtSlot, fileLocation } from "./data";
+import { fileLocation, archiveColumns, records } from "./data";
 import {
   cellKey,
   sameCell,
@@ -21,6 +21,7 @@ import {
   poolCell,
   visibleCell,
   LOOP_COLUMNS,
+  CONTENT_ROW_PERIOD,
   LOOP_ROWS,
   COLUMN_SPACING,
   ROW_SPACING,
@@ -96,6 +97,7 @@ export class ArchiveScene {
   private pulses: { row: number; lane: number; time: number }[] = [];
   private pendingPulse: ArchiveCell | null = null;
   private selectedSlot = 76;
+  private selectedRecord = 0;
   private detail = 0;
   private targetDetail = 0;
   private reveal = 0;
@@ -441,7 +443,7 @@ export class ArchiveScene {
     if (mode !== "archive") this.pendingPulse = null;
     this.looping = mode !== "hidden";
     if (!this.looping) {
-      const canonical = fileLocation(fileAtSlot(this.selectedSlot));
+      const canonical = fileLocation(this.selectedRecord);
       this.selectedCell = { lane: canonical.lane, row: canonical.row };
       this.coordinateOrigin = { lane: 0, row: 0 };
       for (const old of this.outgoing) {
@@ -514,11 +516,11 @@ export class ArchiveScene {
     const shift = {
       lane:
         Math.abs(this.selectedCell.lane) > 2048
-          ? Math.round((this.selectedCell.lane - 2) / 5) * 5
+          ? Math.round((this.selectedCell.lane - 2) / archiveColumns.length) * archiveColumns.length
           : 0,
       row:
         Math.abs(this.selectedCell.row) > 2048
-          ? Math.floor((this.selectedCell.row - 12) / 8) * 8
+          ? Math.floor((this.selectedCell.row - 12) / CONTENT_ROW_PERIOD) * CONTENT_ROW_PERIOD
           : 0,
     };
     if (!shift.lane && !shift.row) return;
@@ -586,6 +588,7 @@ export class ArchiveScene {
       this.lift.velocity = 0;
     }
     this.selectedSlot = next;
+    this.selectedRecord = index;
     this.selectedCell = cell;
     if (changed) {
       this.decryption.select();
@@ -622,17 +625,17 @@ export class ArchiveScene {
     c.fillRect(12, 12, 1000, 6);
     c.fillRect(12, 419, 1000, 3);
     c.font = "bold 81px MiSans";
-    c.fillText("RHINE LAB, LLC.", 22, 116);
+    c.fillText("RNDYT / BLOG", 22, 116);
     c.font = "32px MiSans";
     c.fillStyle = "#878476";
-    c.fillText("INTERNAL DATABASE", 25, 174);
+    c.fillText("PERSONAL ARCHIVE", 25, 174);
     c.fillStyle = "#171713";
     c.font = "bold 130px MiSans";
-    c.fillText("NO." + String(index + 1).padStart(3, "0"), 22, 360);
+    c.fillText(records[index].id, 22, 360);
     c.fillRect(782, 32, 221, 39);
     c.fillStyle = "#eee9de";
     c.font = "24px MiSans";
-    c.fillText("R L / I S", 809, 61);
+    c.fillText("R N / B L", 809, 61);
     c.fillStyle = "#171713";
     c.font = "bold 64px MiSans";
     c.fillText("INFO", 830, 143);

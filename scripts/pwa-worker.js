@@ -1,7 +1,7 @@
 /* The build replaces both tokens; this file is never registered in development. */
 const VERSION = __CACHE_VERSION__;
 const FILES = __PRECACHE_FILES__;
-const PREFIX = `rhine-lab:${new URL(self.registration.scope).pathname}:`;
+const PREFIX = `rndyt-blog:${new URL(self.registration.scope).pathname}:`;
 const CACHE = PREFIX + VERSION;
 const urls = FILES.map(path => new URL(path, self.registration.scope).href);
 const allowed = new Set(urls);
@@ -49,7 +49,7 @@ self.addEventListener("fetch", event => {
   url.hash = "";
   const navigation = event.request.mode === "navigate" &&
     (url.href === self.registration.scope || url.href === index);
-  const key = navigation ? index : url.href;
+  const key = navigation ? index : url.pathname.endsWith("/") ? new URL("index.html", url).href : url.href;
   if (!allowed.has(key)) return;
   event.respondWith((async () => {
     const cache = await caches.open(CACHE);

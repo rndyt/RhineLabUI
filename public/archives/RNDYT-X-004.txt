@@ -1,0 +1,65 @@
+﻿RNDYT · PERSONAL BLOG
+X-004 / 【示例】把 AI 放进代码审查循环
+作者：rndyt
+日期：2026-08-18
+分类：AI 实践
+标签：workflow / code-review / verification
+示例内容，非真实经历或成果。
+
+> 这是预览站占位内容。下方 replay 只用于展示交互结构，不代表真实项目、真实数据或真实模型结果。
+
+## 先定义循环
+
+AI-native 不是把一段 Prompt 放在页面上，而是为一次工作循环留下可检查的输入和输出。这个示例把循环拆成四步：问题、AI 提议、人工判断、验证结果。
+
+## 为什么要保留人工判断
+
+模型可以帮助扩大候选空间，但它不知道哪些约束不能被破坏。人的工作不是替模型润色结论，而是决定哪些建议有资格进入代码和测试。
+
+## 固定 replay
+
+下面的演示使用固定数据，不调用外部模型。正式内容会替换主题、输入输出和验证结果。
+### 01 / define · 定义问题
+
+示例：一段 Java service 在高峰期重复读取同一份配置。目标是找出可复现的风险并给出最小改动建议。
+
+```text
+input/problem.md
+context: repeated config reads
+constraint: preserve public API
+question: where is the avoidable work?
+```
+
+### 02 / propose · 提出假设
+
+模型标出调用链、列出可能的缓存边界，并把不确定的地方写成待验证假设。
+
+```text
+model/proposal.txt
+assumption A: config lookup is request-invariant
+assumption B: local cache lifetime is bounded
+confidence: medium
+```
+
+### 03 / review · 人工判断
+
+人工检查配置的生命周期、并发语义和异常路径，只采纳不改变外部契约的部分。
+
+```text
+review/decision.md
+accept: memoize lookup per request
+reject: global cache without invalidation
+reason: ownership and staleness risk
+```
+
+### 04 / verify · 验证结果
+
+补充回归测试，再用固定输入记录基准结果。以下输出均为示例，不代表实际项目的验证结果。
+
+```text
+verification/result.txt
+regression: passing (sample)
+benchmark: captured (sample)
+next: compare under production-like load
+```
+

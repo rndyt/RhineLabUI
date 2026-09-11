@@ -12,6 +12,13 @@ export interface ArchiveRecord {
   abstract: string;
   findings: string[];
   source: string;
+  slug: string;
+  body: string;
+  bodyHtml: string;
+  tags: string[];
+  readingMinutes: number;
+  preview: boolean;
+  headings: { id: string; text: string }[];
 }
 
 export const records: ArchiveRecord[] = content.records;
@@ -30,6 +37,6 @@ export function fileLocation(index: number) {
   return { lane, row, slot: lane * 32 + row };
 }
 export function fileAtSlot(slot: number) {
-  const files = columnFiles(Math.floor(slot / 32));
+  const files = columnFiles(((Math.floor(slot / 32) % archiveColumns.length) + archiveColumns.length) % archiveColumns.length);
   return files[Math.max(0, Math.min(files.length - 1, (slot % 32) - 12))];
 }

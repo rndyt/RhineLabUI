@@ -8,6 +8,12 @@ export const LOOP_COLUMNS = 9;
 export const LOOP_ROWS = 32;
 export const COLUMN_SPACING = 5.2;
 export const ROW_SPACING = 0.62;
+// A common row period preserves every column's contents during coordinate rebasing.
+const gcd = (a: number, b: number): number => b ? gcd(b, a % b) : a;
+export const CONTENT_ROW_PERIOD = archiveColumns.reduce((period, _, lane) => {
+  const count = columnFiles(lane).length;
+  return period / gcd(period, count) * count;
+}, 1);
 const POOL_LANES = [0, 1, 2, 3, 4, -2, -1, 5, 6];
 
 export function wrap(value: number, count: number) {

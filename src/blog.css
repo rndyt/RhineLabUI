@@ -1,0 +1,26 @@
+/* Keep the original scene, calibrated camera, motion and visual system. */
+.plain-reading-entry { position: fixed; z-index: 100; bottom: max(10px, env(safe-area-inset-bottom)); left: 18px; font: 12px/1.5 MiSans, sans-serif; color: #655237; padding: 8px 12px; background: #e8e5e1e8; border: 1px solid #bab2a3; text-decoration: none; }
+.plain-reading-entry:focus-visible { outline: 2px solid #a67d48; outline-offset: 3px; }
+.detail-content h2 { line-height: 1.4; font-size: 30px; letter-spacing: -.6px; }
+.detail-content .tab-panel { height: auto; min-height: 189px; overflow: visible; padding-bottom: 20px; }
+.detail-content .blog-prose { font-size: 16px; line-height: 1.95; color: #49483f; overflow-wrap: anywhere; }
+.detail-content .blog-prose p { font-size: inherit; text-align: left; margin: 16px 0; }
+.detail-content .blog-prose h1, .detail-content .blog-prose h2, .detail-content .blog-prose h3 { font-size: 22px; line-height: 1.5; color: #20221d; margin: 28px 0 14px; }
+.detail-content .blog-prose h3 { font-size: 19px; }
+.blog-prose pre { overflow-x: auto; padding: 16px; background: #f1eee7; border: 1px solid #bdb5a5; font-size: 13px; line-height: 1.8; }
+.blog-prose code { font-family: ui-monospace, monospace; background: #f1eee7; font-size: .88em; }
+.blog-prose blockquote { border-left: 2px solid #ad956e; padding-left: 16px; margin: 20px 0; }
+.blog-prose img { max-width: 100%; height: auto; }
+.blog-prose table { display: block; overflow-x: auto; border-collapse: collapse; }
+.blog-prose th, .blog-prose td { border: 1px solid #bdb5a5; padding: 8px; }
+.blog-prose a { color: #75562e; text-underline-offset: 4px; }
+.tab-panel .blog-preview { border-left: 3px solid #ad956e; padding: 8px 12px; font-size: 12px; color: #685539; background: #f1eee760; }
+.blog-reading-actions { display: flex; gap: 24px; padding: 20px 0; border-bottom: 1px solid #bdb5a5; font-size: 14px; }
+.blog-reading-actions a { color: inherit; text-decoration: none; }
+.blog-related, .blog-toc button { width: 100%; text-align: left; padding: 16px 0; border-bottom: 1px solid #bdb5a5; font-size: 15px; }
+.blog-related small { display: block; color: #746c5e; font-size: 12px; margin-top: 6px; }
+[data-layout="desktop"] .detail-content { top: 245px; max-height: calc(100% - 340px); }
+[data-layout="portrait"] .detail-content { bottom: 68px; }
+[data-layout="portrait"] .system-footer { bottom: 40px; }
+[data-layout="portrait"] .plain-reading-entry { font-size: 11px; }
+@media (prefers-reduced-motion: reduce) { .blog-prose * { scroll-behavior: auto; } }

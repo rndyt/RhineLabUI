@@ -29,6 +29,7 @@ import { TerminalAudio } from "./audio";
 import { audioSettingsMarkup } from "./audio-settings";
 import { StartupGate } from "./startup";
 import "./startup.css";
+import "./blog.css";
 
 const $ = <T extends HTMLElement = HTMLElement>(selector: string) =>
   document.querySelector<T>(selector)!;
@@ -50,29 +51,29 @@ $("#stage").innerHTML = `
     <div class="boot-logo">${logo}</div>
     <div class="auth-status"><span>▪</span> <span id="auth-message"></span><i></i></div>
     <div class="scan"><svg viewBox="0 0 1920 1080" aria-hidden="true"><g fill="none" stroke="#080a08" stroke-width="2" stroke-linecap="round"><path/><path stroke="#fff"/><path/><path/><path/><path/><circle class="orbit-dot" r="8" fill="#ed821b" stroke="none"/><circle class="orbit-dot" r="8" fill="#ed821b" stroke="none"/><circle class="scan-core" cx="960" cy="540" r="5" fill="#080a08" stroke="none"/></g></svg><span>PERMISSION AUTHORIZED</span></div>
-    <div class="welcome"><div class="welcome-panel"></div><div class="welcome-heading">WELCOME TO</div><div class="welcome-company"><strong>RHINE LAB.LLC.</strong><strong class="welcome-highlight" aria-hidden="true">RHINE LAB.LLC.</strong></div><div class="welcome-database">INTERNAL DATABASE</div><div class="welcome-logo">${logo}</div></div>
+    <div class="welcome"><div class="welcome-panel"></div><div class="welcome-heading">WELCOME TO</div><div class="welcome-company"><strong>RNDYT BLOG.</strong><strong class="welcome-highlight" aria-hidden="true">RNDYT BLOG.</strong></div><div class="welcome-database">PERSONAL ARCHIVE</div><div class="welcome-logo">${logo}</div></div>
   </section>
   <div id="cinema-caption" class="cinema-caption"></div>
   <svg id="inspection-marks" viewBox="0 0 1920 1080" aria-hidden="true"><path id="inspection-lines"/><g id="inspection-corners"></g><circle id="inspection-point" r="1.8"/></svg>
-  <div id="inspection-text" aria-hidden="true">CONFIDENTIALITY:<strong>GENERAL BUSINESS USE</strong></div>
+  <div id="inspection-text" aria-hidden="true">CONFIDENTIALITY:<strong>PUBLIC READING</strong></div>
   <section id="archive-ui" class="archive-ui" aria-label="档案选择">
-    <div class="archive-callout"><div class="eyebrow">INTERNAL DATABASE <span>／</span> <span id="archive-category">机构档案</span></div><button class="file-title" data-action="open">FILE NUMBER: <span id="selected-id">X-<span id="selected-code">001</span></span><span class="file-open">↗</span></button><div class="callout-rule"><i></i></div><div class="file-summary"><span id="selected-title">莱茵生命</span><span id="selected-clearance">BUSINESS AREA</span></div><button class="read-file" data-action="open">ACCESS FILE <span>→</span></button></div>
+    <div class="archive-callout"><div class="eyebrow">PERSONAL ARCHIVE <span>／</span> <span id="archive-category">工程文章</span></div><button class="file-title" data-action="open">POST NUMBER: <span id="selected-id">X-<span id="selected-code">001</span></span><span class="file-open">↗</span></button><div class="callout-rule"><i></i></div><div class="file-summary"><span id="selected-title">rndyt 博客</span><span id="selected-clearance">PREVIEW / 示例</span></div><button class="read-file" data-action="open">ACCESS FILE <span>→</span></button></div>
     <div id="hover-label" class="hover-label" hidden>X-<span id="hover-code">001</span> / <span id="hover-title"></span></div>
     <div class="archive-counter"><span class="tiny-label">ARCHIVE / SELECT</span><div><span id="selected-number">01</span><i>/</i><span class="count-total">12</span></div></div>
     <div class="archive-navigation"><button data-action="prev" aria-label="上一个档案">↑</button><div id="file-ticks" class="file-ticks"></div><button data-action="next" aria-label="下一个档案">↓</button></div>
-    <div class="column-navigation"><button data-action="column-prev" aria-label="上一列">←</button><div><span id="column-number">COLUMN <span id="column-index">03</span> / 05</span><strong id="column-name">机构档案</strong></div><button data-action="column-next" aria-label="下一列">→</button></div>
+    <div class="column-navigation"><button data-action="column-prev" aria-label="上一列">←</button><div><span id="column-number">COLUMN <span id="column-index">03</span> / ${String(archiveColumns.length).padStart(2, "0")}</span><strong id="column-name">工程文章</strong></div><button data-action="column-next" aria-label="下一列">→</button></div>
     <div class="archive-hint"><kbd>←</kbd> <kbd>→</kbd> 切换列 <span>／</span> <kbd>↑</kbd> <kbd>↓</kbd> 前后档案 <span>／</span> <kbd>ENTER</kbd> 读取</div>
   </section>
   <section id="detail-ui" class="detail-ui" aria-label="档案内容" hidden>
     <button class="back-button" data-action="back">← <span>ARCHIVE OVERVIEW</span><small>ESC</small></button>
-    <div class="object-caption"><span id="object-id">NO.001</span><div>INTERNAL DATABASE</div><small>DRAG TO INSPECT <span>↔</span></small><button class="viewer-open" data-action="model-viewer">360° 查看文档模型 <span>↗</span></button></div>
+    <div class="object-caption"><span id="object-id">NO.001</span><div>PERSONAL ARCHIVE</div><small>DRAG TO INSPECT <span>↔</span></small><button class="viewer-open" data-action="model-viewer">360° 查看文档模型 <span>↗</span></button></div>
     <article id="detail-content" class="detail-content"></article>
   </section>
-  <div class="powered">POWERED BY <b>RHINE LAB</b><i></i></div>
-  <footer class="system-footer"><span><i class="status-light"></i> SESSION AUTHORIZED</span><span>JOYCE MOORE <i>／</i> <span id="clock">00:00:00</span></span><button data-action="replay" title="重播启动流程">REINITIALIZE ↗</button></footer>
+  <div class="powered">POWERED BY <b>RNDYT</b><i></i></div>
+  <footer class="system-footer"><span><i class="status-light"></i> PUBLIC READING</span><span>RNDYT <i>／</i> <span id="clock">00:00:00</span></span><button data-action="replay" title="重播启动流程">REINITIALIZE ↗</button></footer>
   <div id="pwa-update-notice" class="pwa-update-notice" role="status" hidden><span>新版本已就绪</span><button data-pwa-action="update">更新并重启 ↻</button></div>
   <div id="modal-root"></div><div id="toast" class="toast" role="status"></div>
-  <div id="loading" class="loading"><div class="loading-mark">${logo}</div><span>CONNECTING TO INTERNAL DATABASE</span><i></i></div>
+  <div id="loading" class="loading"><div class="loading-mark">${logo}</div><span>CONNECTING TO PERSONAL ARCHIVE</span><i></i></div>
 `;
 
 $("#boot-background").insertAdjacentHTML(
@@ -92,6 +93,7 @@ let modal: "search" | "saved" | "settings" | null = null,
   searchQuery = "",
   filter = "全部档案";
 let activeTab = "overview";
+let restoringRoute = false;
 const reviewParams = new URLSearchParams(location.search);
 let frozenTime =
   reviewParams.get("freeze") === "1"
@@ -128,8 +130,8 @@ function readLocal<T>(key: string, fallback: T): T {
     return fallback;
   }
 }
-const saved = new Set<string>(readLocal<string[]>("rhine-saved", []));
-const storedPrefs = readLocal<Partial<{ sound: boolean; music: boolean; soundVolume: number; musicVolume: number; reduced: boolean; quality: boolean; rendering: RenderQuality }>>("rhine-settings", {});
+const saved = new Set<string>(readLocal<string[]>("rndyt-blog-saved", []));
+const storedPrefs = readLocal<Partial<{ sound: boolean; music: boolean; soundVolume: number; musicVolume: number; reduced: boolean; quality: boolean; rendering: RenderQuality }>>("rndyt-blog-settings", {});
 const prefs = {
   sound: true,
   music: storedPrefs.sound ?? true,
@@ -190,7 +192,7 @@ const selectedCode = createRollingNumber($("#selected-code"), codeOptions);
 const hoverCode = createRollingNumber($("#hover-code"), codeOptions);
 const audio = new TerminalAudio();
 audio.configure(prefs);
-const reviewEntry = reviewParams.has("scene") || reviewParams.has("time") || reviewParams.get("review") === "1";
+const reviewEntry = reviewParams.has("scene") || reviewParams.has("time") || reviewParams.get("review") === "1" || reviewParams.has("post");
 let started = false;
 const loading = $("#loading");
 // The entry screen uses the actual viewport, including portrait phones; the
@@ -211,17 +213,10 @@ if (entry) {
 let audioPreview = false, audioPreviewRequest = 0;
 let scene: ArchiveScene;
 let viewer: ModelViewer | undefined;
-const accessLog: { id: string; time: string }[] = [];
 const columnMemory = archiveColumns.map((_, lane) => columnFiles(lane)[0]);
-function recordAccess() {
-  accessLog.unshift({
-    id: records[selected].id,
-    time: new Date().toLocaleTimeString("en-GB"),
-  });
-}
 function saveAudioPrefs() {
   try {
-    localStorage.setItem("rhine-settings", JSON.stringify(prefs));
+    localStorage.setItem("rndyt-blog-settings", JSON.stringify(prefs));
   } catch {}
   audio.configure(prefs);
 }
@@ -292,7 +287,7 @@ $("#file-ticks").innerHTML = columnFiles(fileLocation(selected).lane)
     (index) => `<button data-select="${index}"></button>`,
   )
   .join("");
-const fileTicks = [...$("#file-ticks").querySelectorAll<HTMLButtonElement>("button")];
+let fileTicks = [...$("#file-ticks").querySelectorAll<HTMLButtonElement>("button")];
 
 function setMode(next: Mode) {
   const previousMode = mode;
@@ -302,7 +297,6 @@ function setMode(next: Mode) {
     hoverCode.finish();
     $("#hover-label").hidden = true;
   }
-  if (next === "detail" && mode !== "detail") recordAccess();
   mode = next;
   audio.setScene(next);
   if (next !== "boot" && audioPreview) {
@@ -330,7 +324,7 @@ function setMode(next: Mode) {
   scene?.setMode(next === "boot" ? "hidden" : next);
   if (next !== "boot") {
     bootSequence.reset();
-    $(".file-title").firstChild!.textContent = "FILE NUMBER: ";
+    $(".file-title").firstChild!.textContent = "POST NUMBER: ";
     $("#stage").dataset.boot = "done";
     $("#cinema-caption").textContent = "";
   }
@@ -338,7 +332,25 @@ function setMode(next: Mode) {
     renderDetail();
     pendingDetailFocus = true;
   }
+  if (started && !restoringRoute && (next === "detail" || previousMode === "detail")) {
+    const url = new URL(location.href);
+    if (next === "detail") url.searchParams.set("post", records[selected].slug);
+    else url.searchParams.delete("post");
+    if (url.href !== location.href) history.pushState(null, "", url);
+  }
+  document.title = next === "detail" ? `${records[selected].title} · rndyt` : "rndyt · 个人博客";
 }
+function applyPostRoute() {
+  if (!ready || !started) return;
+  const slug = new URL(location.href).searchParams.get("post");
+  const index = records.findIndex(r => r.slug === slug);
+  restoringRoute = true;
+  try {
+    if (index >= 0) { select(index); setMode("detail"); }
+    else { setMode("archive"); if (slug) notify("未找到这篇文章，可从文章目录重新选择。"); }
+  } finally { restoringRoute = false; }
+}
+window.addEventListener("popstate", applyPostRoute);
 function select(index: number, navigation?: ArchiveNavigation) {
   selected = (index + records.length) % records.length;
   columnMemory[fileLocation(selected).lane] = selected;
@@ -400,6 +412,10 @@ function updateSelection(navigation?: ArchiveNavigation) {
   columnTitle.update({ text: archiveColumns[lane], animated: !prefs.reduced && mode === "archive" });
   $<HTMLButtonElement>('[data-action="column-prev"]').disabled = false;
   $<HTMLButtonElement>('[data-action="column-next"]').disabled = false;
+  if (fileTicks.length !== files.length) {
+    $("#file-ticks").innerHTML = files.map(index => `<button data-select="${index}"></button>`).join("");
+    fileTicks = [...$("#file-ticks").querySelectorAll<HTMLButtonElement>("button")];
+  }
   fileTicks.forEach((button, slot) => {
     const index = files[slot], record = records[index];
     button.dataset.select = String(index);
@@ -437,7 +453,7 @@ function toggleSaved() {
   if (saved.has(id)) saved.delete(id);
   else saved.add(id);
   try {
-    localStorage.setItem("rhine-saved", JSON.stringify([...saved]));
+    localStorage.setItem("rndyt-blog-saved", JSON.stringify([...saved]));
   } catch {}
   $("#saved-count").textContent = String(saved.size).padStart(2, "0");
   const button = $<HTMLButtonElement>('[data-action="bookmark"]');
@@ -456,23 +472,26 @@ function toggleSaved() {
 function renderDetail() {
   tabTransition.cancel();
   const r = records[selected];
-  $("#object-id").textContent = "NO." + String(selected + 1).padStart(3, "0");
+  $("#object-id").textContent = "NO." + r.id.slice(2);
   $("#detail-content").innerHTML = `
   <div class="detail-kicker"><span>FILE ${r.id}</span><span>${escapeHtml(r.clearance)}</span></div>
-  <h2>${escapeHtml(r.en)}</h2><div class="detail-title-cn">${escapeHtml(r.title)}<span>${escapeHtml(r.category)}</span></div>
+  <h2>${escapeHtml(r.title)}</h2><div class="detail-title-cn">${escapeHtml(r.category)}<span>${r.readingMinutes} MIN READ</span></div>
   <div class="detail-rule"></div>
-  <dl class="metadata"><div><dt>DEPARTMENT / 科室</dt><dd>${escapeHtml(r.department)}</dd></div><div><dt>COLLECTION / 编目范围</dt><dd>${escapeHtml(r.date)}</dd></div><div><dt>RELATED / 相关人物</dt><dd>${escapeHtml(r.lead)}</dd></div><div><dt>STATUS / 状态</dt><dd><i></i>${r.clearance === "RESTRICTED" ? "目录访问" : "已归档 · 可读取"}</dd></div></dl>
-  <div class="detail-tabs" role="tablist"><button id="tab-overview" class="active" role="tab" aria-controls="tab-panel" aria-selected="true" data-tab="overview">01 <span>概述</span></button><button id="tab-notes" role="tab" aria-controls="tab-panel" aria-selected="false" data-tab="notes">02 <span>研究记录</span></button><button id="tab-history" role="tab" aria-controls="tab-panel" aria-selected="false" data-tab="history">03 <span>访问日志</span></button><i class="tab-indicator" aria-hidden="true"></i></div>
+  <dl class="metadata"><div><dt>TAGS / 标签</dt><dd>${escapeHtml(r.department)}</dd></div><div><dt>DATE / 日期</dt><dd>${escapeHtml(r.date)}</dd></div><div><dt>AUTHOR / 作者</dt><dd>${escapeHtml(r.lead)}</dd></div><div><dt>STATUS / 状态</dt><dd><i></i>${r.preview ? "示例内容 · 预览" : "已发布 · 可阅读"}</dd></div></dl>
+  <div class="detail-tabs" role="tablist"><button id="tab-overview" class="active" role="tab" aria-controls="tab-panel" aria-selected="true" data-tab="overview">01 <span>正文</span></button><button id="tab-notes" role="tab" aria-controls="tab-panel" aria-selected="false" data-tab="notes">02 <span>目录</span></button><button id="tab-history" role="tab" aria-controls="tab-panel" aria-selected="false" data-tab="history">03 <span>相关文章</span></button><i class="tab-indicator" aria-hidden="true"></i></div>
   <div id="tab-panel" class="tab-panel" role="tabpanel">${overview()}</div>
-  <div class="detail-actions"><button class="solid-button" data-action="bookmark">${saved.has(r.id) ? "− REMOVE FROM SAVED" : "＋ SAVE ARCHIVE"}<span>${saved.has(r.id) ? "已收藏" : "收藏档案"}</span></button><a class="export-button" href="${assetUrl(`archives/RHINE-LAB-${r.id}.txt`)}" download="RHINE-LAB-${r.id}.txt" aria-label="导出 ${r.id} 档案">EXPORT <span>↓</span></a></div>
-  <div class="detail-footnote"><a href="${escapeHtml(r.source)}" target="_blank" rel="noopener">设定参考 ↗</a><span>${String(selected + 1).padStart(3, "0")} / ${String(records.length).padStart(3, "0")}</span></div>`;
+  <div class="detail-actions"><button class="solid-button" data-action="bookmark">${saved.has(r.id) ? "− REMOVE FROM SAVED" : "＋ SAVE ARCHIVE"}<span>${saved.has(r.id) ? "已收藏" : "收藏档案"}</span></button><a class="export-button" href="${assetUrl(`archives/RNDYT-${r.id}.txt`)}" download="RNDYT-${r.id}.txt" aria-label="导出 ${r.id} 档案">EXPORT <span>↓</span></a></div>
+  <div class="blog-reading-actions"><a href="${escapeHtml(r.source)}">展开阅读 ↗</a><button data-action="copy-link">复制文章链接</button></div>
+  <div class="detail-footnote"><a href="/blog/">全部文章 ↗</a><span>${String(selected + 1).padStart(3, "0")} / ${String(records.length).padStart(3, "0")}</span></div>`;
+  $("#detail-content").scrollTop = 0;
   $("#detail-content").setAttribute("tabindex", "-1");
   $('[data-action="bookmark"]').setAttribute("aria-pressed", String(saved.has(r.id)));
   documentDecryption.reset($("#detail-content"), prefs.reduced || scene.decryptionFrame.phase === "clear");
   setTab(activeTab, false);
 }
 function overview() {
-  return `<div class="panel-label">ABSTRACT / 摘要</div><p>${escapeHtml(records[selected].abstract)}</p>`;
+  const r = records[selected];
+  return `${r.preview ? '<p class="blog-preview">示例内容 · 尚未替换为真实文章或项目资料。</p>' : ''}<div class="blog-prose">${r.bodyHtml}</div>`;
 }
 function setTab(tab: string, sound = true) {
   if (sound && tab === activeTab) return;
@@ -493,17 +512,8 @@ function setTab(tab: string, sound = true) {
     tab === "overview"
       ? overview()
       : tab === "notes"
-        ? `<div class="panel-label">RESEARCH NOTES / 研究记录</div><ol class="research-notes">${r.findings.map((f, i) => `<li><span>${String(i + 1).padStart(2, "0")}</span>${escapeHtml(f)}</li>`).join("")}</ol>`
-        : `<div class="panel-label">ACCESS LOG / 本次访问</div>${accessLog
-            .filter((entry) => entry.id === r.id)
-            .slice(0, 4)
-            .map(
-              (entry) =>
-                `<div class="log-row"><span>${entry.time}</span><span>JOYCE MOORE</span><b>READ AUTHORIZED</b></div>`,
-            )
-            .join(
-              "",
-            )}<p class="log-note">本次会话已通过身份验证。档案内容以当前终端可访问范围展示。</p>`;
+        ? `<div class="panel-label">CONTENTS / 本文目录</div>${r.headings.length ? `<nav class="blog-toc" aria-label="本文目录">${r.headings.map(h => `<button data-heading="${h.id}">${h.text}</button>`).join("")}</nav>` : '<p>这是一篇短文，可直接在正文页签阅读。</p>'}`
+        : `<div class="panel-label">RELATED / 同类文章</div>${records.map((post, index) => ({ post, index })).filter(({post}) => post.id !== r.id && post.category === r.category).map(({post,index}) => `<button class="blog-related" data-result="${index}"><span>${escapeHtml(post.title)}</span><small>${escapeHtml(post.date)} ↗</small></button>`).join("") || '<p>当前分类暂无其他文章。</p>'}`;
   $("#tab-panel").scrollTop = 0;
   documentDecryption.refresh();
   if (sound) {
@@ -559,7 +569,7 @@ function renderModal() {
   if (!modal) return;
   modalTransition?.dispose();
   $("#modal-root").innerHTML =
-    `<div class="modal-backdrop"><section class="terminal-modal ${modal === "settings" ? "settings-modal" : ""}" role="dialog" aria-modal="true" aria-label="${modal === "settings" ? "系统设置" : modal === "saved" ? "收藏档案" : "档案检索"}"><div class="modal-top"><span>RHINE LAB / ${modal === "settings" ? "SYSTEM PREFERENCES" : "ARCHIVE DIRECTORY"}</span><button data-action="close-modal" aria-label="关闭窗口">CLOSE <span>×</span></button></div>${modal === "settings" ? settingsMarkup() : `<h2>${modal === "saved" ? "SAVED ARCHIVES" : "ARCHIVE INDEX"}<small>${modal === "saved" ? "收藏档案" : "内部档案检索"}</small></h2><div class="search-field"><span>⌕</span><input id="archive-search" type="search" autocomplete="off" placeholder="输入档案编号、名称或科室" aria-label="检索档案"/><span class="key">ESC</span></div><div class="category-filters">${categories.map((c, i) => `<button data-filter="${escapeHtml(c)}" class="${i === 0 ? "active" : ""}">${escapeHtml(c)}</button>`).join("")}</div><div class="result-header"><span>FILE / 档案</span><span>DEPARTMENT / 科室</span><span>ACCESS</span></div><div id="search-results" class="search-results"></div><div class="modal-bottom"><span id="result-count"></span><span>INTERNAL DATABASE <i>●</i> CONNECTED</span></div>`}</section></div>`;
+    `<div class="modal-backdrop"><section class="terminal-modal ${modal === "settings" ? "settings-modal" : ""}" role="dialog" aria-modal="true" aria-label="${modal === "settings" ? "系统设置" : modal === "saved" ? "收藏档案" : "档案检索"}"><div class="modal-top"><span>RNDYT / ${modal === "settings" ? "SYSTEM PREFERENCES" : "ARCHIVE DIRECTORY"}</span><button data-action="close-modal" aria-label="关闭窗口">CLOSE <span>×</span></button></div>${modal === "settings" ? settingsMarkup() : `<h2>${modal === "saved" ? "SAVED ARCHIVES" : "ARCHIVE INDEX"}<small>${modal === "saved" ? "收藏档案" : "博客文章检索"}</small></h2><div class="search-field"><span>⌕</span><input id="archive-search" type="search" autocomplete="off" placeholder="输入文章标题、标签或关键词" aria-label="检索档案"/><span class="key">ESC</span></div><div class="category-filters">${categories.map((c, i) => `<button data-filter="${escapeHtml(c)}" class="${i === 0 ? "active" : ""}">${escapeHtml(c)}</button>`).join("")}</div><div class="result-header"><span>FILE / 档案</span><span>TAGS / 标签</span><span>ACCESS</span></div><div id="search-results" class="search-results"></div><div class="modal-bottom"><span id="result-count"></span><span>PERSONAL ARCHIVE <i>●</i> CONNECTED</span></div>`}</section></div>`;
   const backdrop = $(".modal-backdrop");
   backdrop.hidden = true;
   modalTransition = new SurfaceTransition(backdrop, $(".terminal-modal"));
@@ -587,7 +597,7 @@ function renderResults() {
       ({ r }) =>
         (modal !== "saved" || saved.has(r.id)) &&
         (filter === "全部档案" || r.category === filter) &&
-        `${r.id} ${r.title} ${r.en} ${r.department} ${r.lead}`
+        `${r.id} ${r.title} ${r.en} ${r.department} ${r.lead} ${r.body}`
           .toLowerCase()
           .includes(searchQuery.toLowerCase()),
     );
@@ -595,10 +605,10 @@ function renderResults() {
     ? results
         .map(
           ({ r, i }) =>
-            `<button class="result-row" data-result="${i}"><span class="result-name"><b>${r.id}</b><span>${escapeHtml(r.title)}<small>${escapeHtml(r.en)}</small></span>${saved.has(r.id) ? "<i>＋</i>" : ""}</span><span>${escapeHtml(r.department)}</span><span>${r.clearance === "RESTRICTED" ? "CATALOG ONLY" : "AUTHORIZED"} <i>↗</i></span></button>`,
+            `<button class="result-row" data-result="${i}"><span class="result-name"><b>${r.id}</b><span>${escapeHtml(r.title)}<small>${escapeHtml(r.en)}</small></span>${saved.has(r.id) ? "<i>＋</i>" : ""}</span><span>${escapeHtml(r.department)}</span><span>${r.preview ? "示例" : "已发布"} <i>↗</i></span></button>`,
         )
         .join("")
-    : `<div class="empty-results"><span>∅</span><strong>${modal === "saved" && !searchQuery ? "尚无收藏档案" : "没有匹配的档案"}</strong><p>${modal === "saved" && !searchQuery ? "读取档案时，选择 SAVE ARCHIVE 将其保存在此处。" : "尝试其他名称、档案编号，或切换科室分类。"}</p><button data-action="reset-search">${modal === "saved" ? "查看全部档案 →" : "重置检索 →"}</button></div>`;
+    : `<div class="empty-results"><span>∅</span><strong>${modal === "saved" && !searchQuery ? "尚无收藏档案" : "没有匹配的档案"}</strong><p>${modal === "saved" && !searchQuery ? "读取档案时，选择 SAVE ARCHIVE 将其保存在此处。" : "尝试其他名称、档案编号，或切换文章分类。"}</p><button data-action="reset-search">${modal === "saved" ? "查看全部档案 →" : "重置检索 →"}</button></div>`;
   $("#result-count").textContent =
     `${String(results.length).padStart(2, "0")} RECORDS FOUND`;
 }
@@ -615,7 +625,7 @@ function motionSettingsMarkup() {
     : "当前使用完整动效。"}</p>${prefs.reduced ? '<button data-action="enable-motion">启用完整动效并重播 ↻</button>' : ""}</div>`;
 }
 function settingsMarkup() {
-  return `<h2>SYSTEM SETTINGS<small>终端偏好设置</small></h2><p class="settings-intro">JOYCE MOORE <span>·</span> SESSION AUTHORIZED</p><div class="settings-list">${audioSettingsMarkup(prefs)}<label><div><strong>REDUCED MOTION</strong><span>跳过开机动画，简化选档、镜头和文字动效</span></div><input type="checkbox" data-pref="reduced" ${prefs.reduced ? "checked" : ""}/><i class="toggle"></i></label></div>${motionSettingsMarkup()}${qualityMarkup(prefs.rendering)}${pwaSettingsMarkup()}<div class="settings-shortcuts"><span>KEYBOARD CONTROLS</span><p><kbd>←</kbd><kbd>→</kbd> 切列 <kbd>↑</kbd><kbd>↓</kbd> 选档 <kbd>ENTER</kbd> 读取 <kbd>/</kbd> 检索 <kbd>ESC</kbd> 返回</p></div><div class="settings-bottom">${document.fullscreenEnabled ? '<button data-action="fullscreen">FULLSCREEN <span>↗</span></button>' : ''}<button data-action="restart">REINITIALIZE SYSTEM <span>↻</span></button></div><div class="modal-bottom"><span>ANALYSIS OS / 1.0 · 使用 MiSans 字体（小米） <a href="${assetUrl("fonts/MiSans-license.pdf")}" target="_blank" rel="noopener">字体许可</a></span><span>POWERED BY RHINE LAB</span></div>`;
+  return `<h2>SYSTEM SETTINGS<small>终端偏好设置</small></h2><p class="settings-intro">RNDYT <span>·</span> PUBLIC READING</p><div class="settings-list">${audioSettingsMarkup(prefs)}<label><div><strong>REDUCED MOTION</strong><span>跳过开机动画，简化选档、镜头和文字动效</span></div><input type="checkbox" data-pref="reduced" ${prefs.reduced ? "checked" : ""}/><i class="toggle"></i></label></div>${motionSettingsMarkup()}${qualityMarkup(prefs.rendering)}${pwaSettingsMarkup()}<div class="settings-shortcuts"><span>KEYBOARD CONTROLS</span><p><kbd>←</kbd><kbd>→</kbd> 切列 <kbd>↑</kbd><kbd>↓</kbd> 选档 <kbd>ENTER</kbd> 读取 <kbd>/</kbd> 检索 <kbd>ESC</kbd> 返回</p></div><div class="settings-bottom">${document.fullscreenEnabled ? '<button data-action="fullscreen">FULLSCREEN <span>↗</span></button>' : ''}<button data-action="restart">REINITIALIZE SYSTEM <span>↻</span></button></div><div class="modal-bottom"><span>ANALYSIS OS / 1.0 · 使用 MiSans 字体（小米） <a href="${assetUrl("fonts/MiSans-license.pdf")}" target="_blank" rel="noopener">字体许可</a></span><span>界面基于 <a href="https://github.com/LBEILC/RhineLabUI" target="_blank" rel="noopener">RhineLabUI · LBEILC</a> / MIT</span></div>`;
 }
 
 document.addEventListener("input", (e) => {
@@ -658,6 +668,12 @@ document.addEventListener("click", (e) => {
   if (modalClosing) return;
   const el = (e.target as Element).closest<HTMLElement>("button");
   if (!el) return;
+  if (el.dataset.heading) {
+    const id = el.dataset.heading;
+    setTab("overview");
+    document.getElementById(id)?.scrollIntoView({ block: "start", behavior: prefs.reduced ? "instant" : "smooth" });
+    return;
+  }
   if (el.dataset.select) {
     select(Number(el.dataset.select));
     return;
@@ -665,7 +681,8 @@ document.addEventListener("click", (e) => {
   if (el.dataset.result) {
     const index = Number(el.dataset.result);
     closeModal(() => {
-      select(index);
+      restoringRoute = true;
+      try { select(index); } finally { restoringRoute = false; }
       openFile();
     });
     return;
@@ -724,6 +741,13 @@ document.addEventListener("click", (e) => {
   }
   if (action === "close-modal") closeModal();
   if (action === "bookmark") toggleSaved();
+  if (action === "copy-link") {
+    const url = new URL(location.href);
+    url.search = "";
+    url.searchParams.set("post", records[selected].slug);
+    void navigator.clipboard?.writeText(url.href).then(() => notify("文章链接已复制"), () => notify("请复制地址栏中的文章链接"));
+    if (!navigator.clipboard) notify("请复制地址栏中的文章链接");
+  }
   if (action === "reset-search") {
     modal = "search";
     searchQuery = "";
@@ -795,15 +819,15 @@ document.addEventListener("keydown", (e) => {
     if (mode === "boot") setMode("archive");
     openModal("search");
   }
-  if (e.key === "ArrowLeft" && mode !== "boot") {
+  if (e.key === "ArrowLeft" && mode === "archive") {
     e.preventDefault();
     stepColumn(-1);
   }
-  if (e.key === "ArrowRight" && mode !== "boot") {
+  if (e.key === "ArrowRight" && mode === "archive") {
     e.preventDefault();
     stepColumn(1);
   }
-  if (["ArrowUp", "ArrowDown"].includes(e.key) && mode !== "boot") {
+  if (["ArrowUp", "ArrowDown"].includes(e.key) && mode === "archive") {
     e.preventDefault();
     stepFile(e.key === "ArrowUp" ? -1 : 1);
   }
@@ -833,14 +857,14 @@ function bootFrame(t: number) {
   let caption =
     motion.step === "auth"
       ? t < 9.52
-        ? "身份信息确认：JOYCE MOORE"
+        ? "身份信息确认：RNDYT"
         : t < 11.84
           ? "请求已接收"
           : "开始处理"
       : motion.step === "scan"
         ? "权限验证通过"
         : motion.step === "welcome"
-          ? "欢迎访问莱茵生命内部资料档案"
+          ? "欢迎访问rndyt 博客内部资料档案"
           : "";
   if (t >= 22) {
     step = "array";
@@ -862,7 +886,7 @@ function bootFrame(t: number) {
   $(".file-title").firstChild!.textContent =
     step === "array"
       ? "SELECTING FILES...".slice(0, Math.max(0, Math.floor((t - 21.94) * 18)))
-      : "FILE NUMBER: ";
+      : "POST NUMBER: ";
   $("#stage").style.setProperty(
     "--entry-opacity",
     String(ease((t - 21.9) / 0.13)),
@@ -933,10 +957,10 @@ async function start() {
       scene.load(),
       // With unicode-range faces, preload the opening's actual characters,
       // not every font shard. Other archive text loads on demand.
-      document.fonts.load("300 20px MiSans", "ACCESS WELCOME TO INTERNAL DATABASE"),
-      document.fonts.load("400 20px MiSans", "身份信息确认请求已接收开始处理权限验证通过欢迎访问莱茵生命内部资料档案编号保密级别商业区选择档案：0123456789 JOYCE MOORE"),
+      document.fonts.load("300 20px MiSans", "ACCESS WELCOME TO PERSONAL ARCHIVE"),
+      document.fonts.load("400 20px MiSans", "身份信息确认请求已接收开始处理权限验证通过欢迎访问rndyt 博客内部资料档案编号保密级别商业区选择档案：0123456789 RNDYT"),
       document.fonts.load("600 20px MiSans", "SYNTHESIZE INFORMATION ANALYSIS OS"),
-      document.fonts.load("700 20px MiSans", "RHINE LAB WELCOME TO INTERNAL DATABASE"),
+      document.fonts.load("700 20px MiSans", "RNDYT WELCOME TO PERSONAL ARCHIVE"),
     ]);
     scene.select(selected);
     scene.onSelect = (i, cell) => {
@@ -975,7 +999,7 @@ async function start() {
   } catch (error) {
     console.error(error);
     $("#loading").innerHTML =
-      '<div class="error-state"><strong>CONNECTION INTERRUPTED</strong><p>三维档案资源未能载入。请确认浏览器已启用硬件加速，然后重新连接。</p><button onclick="location.reload()">RECONNECT →</button></div>';
+      '<div class="error-state"><strong>CONNECTION INTERRUPTED</strong><p>三维档案资源未能载入。请确认浏览器已启用硬件加速，然后重新连接，或从下方文章目录直接阅读。</p><a href="/blog/">进入文章目录 ↗</a><button onclick="location.reload()">RECONNECT →</button></div>';
   }
 }
 function completeStartup(silent: boolean) {
@@ -994,6 +1018,7 @@ function completeStartup(silent: boolean) {
   setMode("boot");
   if (reviewParams.get("scene") === "archive" || (prefs.reduced && !reviewParams.has("time"))) setMode("archive");
   if (reviewParams.get("scene") === "detail") setMode("detail");
+  if (new URL(location.href).searchParams.has("post")) applyPostRoute();
   $("#stage").inert = false;
   $(".mobile-entry").inert = false;
   loading.classList.add("loaded");
