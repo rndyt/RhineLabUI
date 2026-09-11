@@ -369,10 +369,7 @@ button {
 .system-nav button:hover {
   color: #9b7247;
 }
-.nav-glyph {
-  width: 23px;
-  height: 23px;
-}
+.search-label-compact { display: none; }
 .key {
   font-size: 11px;
   border: 1px solid #a6a49c;
@@ -385,12 +382,6 @@ button {
   line-height: 1;
   opacity: 0.6;
   margin-left: 6px;
-}
-.settings-glyph {
-  display: block;
-  width: 23px;
-  height: 23px;
-  flex: 0 0 23px;
 }
 .archive-ui {
   opacity: 0;
@@ -1029,14 +1020,12 @@ button {
   height: 26px;
 }
 /* Fixed geometry keeps the search symbol independent of font fallback metrics. */
-.nav-glyph,
 .search-field > span:first-child {
   position: relative;
   flex-shrink: 0;
   display: block;
   font-size: 0;
 }
-.nav-glyph::before,
 .search-field > span:first-child::before {
   content: "";
   position: absolute;
@@ -1048,7 +1037,6 @@ button {
   border-radius: 50%;
   box-sizing: border-box;
 }
-.nav-glyph::after,
 .search-field > span:first-child::after {
   content: "";
   position: absolute;

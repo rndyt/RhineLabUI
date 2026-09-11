@@ -41,9 +41,9 @@ $("#stage").innerHTML = `
   <div id="boot-background" class="boot-background"><svg viewBox="0 0 1920 1080" preserveAspectRatio="none"><g fill="none" stroke="#fff" stroke-width="3"><path d="M-210 705C-45 705 182 704 247 567C337 377 99 306 4 435S27 680 169 631C309 584 227 314 279 111S568-113 568-113"/><path d="M1560-80C1374 114 1671 168 1601 323S1371 367 1431 480S1692 666 1559 787S1329 886 1498 1130"/><circle cx="1450" cy="648" r="346"/><circle cx="1450" cy="648" r="348"/></g></svg></div>
   <header class="brand">${brandHeading}</header>
   <nav class="system-nav" aria-label="系统导航">
-    <button data-action="search"><span class="nav-glyph">⌕</span> ARCHIVE INDEX <span class="key">/</span></button>
+    <button data-action="search" aria-label="Archive Index / 文章检索"><span class="search-label-full">ARCHIVE INDEX</span><span class="search-label-compact">检索</span><span class="key">/</span></button>
     <button data-action="article-index" aria-label="文章目录 / 直接阅读" title="文章目录 / 直接阅读">文章目录 <span aria-hidden="true">↗</span></button>
-    <button class="settings-button" data-action="settings" aria-label="系统设置" title="系统设置"><svg class="settings-glyph" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9"/><path d="M12 3v9h9" stroke-linejoin="round"/></svg><span class="settings-label">设置</span></button>
+    <button class="settings-button" data-action="settings" aria-label="系统设置" title="系统设置"><span class="settings-label">设置</span></button>
   </nav>
   <button id="skip" class="skip" data-action="skip">ENTER SYSTEM <span>↗</span></button>
   <section id="boot" class="boot" aria-label="系统启动">

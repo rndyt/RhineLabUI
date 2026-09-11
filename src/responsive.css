@@ -93,8 +93,8 @@
 /* Portrait keeps the specimen above an independently scrollable document. */
 [data-layout="portrait"] .brand { transform: scale(.42) !important; }
 [data-layout="portrait"] .system-nav { gap: 8px; }
-[data-layout="portrait"] .settings-glyph { display: none; }
-[data-layout="portrait"] .system-nav button[data-action="search"] { font-size: 0; gap: 0; }
+[data-layout="portrait"] .search-label-full { display: none; }
+[data-layout="portrait"] .search-label-compact { display: inline; }
 [data-layout="portrait"] .system-nav button[data-action="article-index"] { font-size: 10px; }
 [data-layout="portrait"] .archive-callout { left: var(--edge); top: auto; bottom: 205px; width: calc(100% - 2 * var(--edge)); }
 [data-layout="portrait"] .archive-counter { bottom: 58px; }
@@ -199,6 +199,7 @@
   [data-layout="compact"] .file-title { font-size: 18px; }
   [data-layout="compact"] .file-open { margin-left: 0; }
   [data-layout="compact"] .system-nav { gap: 8px; }
-  [data-layout="compact"] .system-nav [data-action="search"] { font-size: 0; gap: 0; }
+  [data-layout="compact"] .search-label-full { display: none; }
+  [data-layout="compact"] .search-label-compact { display: inline; }
   [data-layout="compact"] .viewer-help { max-width: 110px; }
 }
