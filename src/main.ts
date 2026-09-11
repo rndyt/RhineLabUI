@@ -28,6 +28,16 @@ import {
 } from "./data";
 import { TerminalAudio } from "./audio";
 import { audioSettingsMarkup } from "./audio-settings";
+import {
+  createMotionPreferences,
+  fullMotion,
+  motionEnabled,
+  motionSettingsMarkup,
+  motionSummary,
+  reducedMotion,
+  type MotionKey,
+  type StoredMotion,
+} from "./motion-preferences";
 import { StartupGate } from "./startup";
 import "./startup.css";
 import "./blog.css";
@@ -133,21 +143,38 @@ function readLocal<T>(key: string, fallback: T): T {
   }
 }
 const saved = new Set<string>(readLocal<string[]>("rndyt-blog-saved", []));
-const storedPrefs = readLocal<Partial<{ sound: boolean; music: boolean; soundVolume: number; musicVolume: number; reduced: boolean; quality: boolean; rendering: RenderQuality }>>("rndyt-blog-settings", {});
+const storedPrefs = readLocal<Partial<{ sound: boolean; music: boolean; soundVolume: number; musicVolume: number; reduced: boolean; quality: boolean; rendering: RenderQuality; motion: StoredMotion; motionPreset: "system" | "full" | "reduced" | "custom" }>>("rndyt-blog-settings", {});
+const motionMedia = matchMedia("(prefers-reduced-motion: reduce)");
+let systemReduced = motionMedia.matches;
+let initialMotionPreset = storedPrefs.motionPreset ?? storedPrefs.motion?.preset
+  ?? (storedPrefs.motion ? "custom" : storedPrefs.reduced === undefined ? (systemReduced ? "system" : "full") : storedPrefs.reduced ? "reduced" : "full");
+const initialMotion = createMotionPreferences(initialMotionPreset === "system" ? undefined : storedPrefs.motion, storedPrefs.reduced, systemReduced);
+if (initialMotionPreset === "full" && !Object.values(initialMotion).every(Boolean)) initialMotionPreset = "custom";
+if (initialMotionPreset === "reduced" && Object.values(initialMotion).some(Boolean)) initialMotionPreset = "custom";
 const prefs = {
-  sound: true,
-  music: storedPrefs.sound ?? true,
-  soundVolume: .55,
-  musicVolume: .5,
-  reduced: matchMedia("(prefers-reduced-motion: reduce)").matches,
-  quality: true,
-  ...storedPrefs,
+  sound: storedPrefs.sound ?? true,
+  music: storedPrefs.music ?? true,
+  soundVolume: storedPrefs.soundVolume ?? .55,
+  musicVolume: storedPrefs.musicVolume ?? .5,
+  motion: initialMotion,
+  motionPreset: initialMotionPreset as "system" | "full" | "reduced" | "custom",
+  quality: storedPrefs.quality ?? true,
   rendering: normalizeQuality(storedPrefs.rendering, storedPrefs.quality !== false),
 };
+motionMedia.addEventListener("change", (event) => {
+  systemReduced = event.matches;
+  if (prefs.motionPreset === "system") {
+    prefs.motion = createMotionPreferences(undefined, undefined, systemReduced);
+    savePrefs();
+    if (modal === "settings") renderModal();
+  }
+});
+const motionActive = (key: MotionKey) => motionEnabled(prefs.motion, key);
+const motionIsReduced = () => Object.values(prefs.motion).every((value) => !value);
 const rollingMotion = {
   duration: 460,
   motionBlur: true,
-  animated: !prefs.reduced,
+  animated: motionActive("rollingNumbers"),
 };
 const numberOptions = {
   ...rollingMotion,
@@ -169,6 +196,7 @@ const codeOptions = {
 };
 const textOptions = {
   ...rollingMotion,
+  animated: motionActive("rollingText"),
   transition: "direct" as const,
   stagger: "none" as const,
 };
@@ -224,23 +252,24 @@ function saveAudioPrefs() {
 }
 function savePrefs() {
   saveAudioPrefs();
-  if (prefs.reduced) {
+  if (motionIsReduced()) {
     rollingTitles.forEach(title => title.finish());
     detailTransition.finish();
     modalTransition?.finish();
     tabTransition.cancel();
   }
-  scene?.setReduced(prefs.reduced);
+  scene?.setMotion(prefs.motion);
   scene?.setQuality(prefs.rendering);
   viewer?.setQuality(prefs.rendering);
+  viewer?.setMotion(prefs.motion);
   syncQualityUI(prefs.rendering);
   updateQualitySummary();
-  fileCounter.update({ animated: !prefs.reduced && mode === "archive" });
-  rollingTitles.forEach(title => title.update({ animated: !prefs.reduced && mode === "archive" }));
-  columnCounter.update({ animated: !prefs.reduced && mode === "archive" });
-  selectedCode.update({ animated: !prefs.reduced && mode === "archive" });
-  hoverCode.update({ animated: !prefs.reduced && mode === "archive" });
-  $("#stage").classList.toggle("reduce-motion", prefs.reduced);
+  fileCounter.update({ animated: motionActive("rollingNumbers") && mode === "archive" });
+  rollingTitles.forEach(title => title.update({ animated: motionActive("rollingText") && mode === "archive" }));
+  columnCounter.update({ animated: motionActive("rollingNumbers") && mode === "archive" });
+  selectedCode.update({ animated: motionActive("rollingNumbers") && mode === "archive" });
+  hoverCode.update({ animated: motionActive("rollingNumbers") && mode === "archive" });
+  $("#stage").classList.toggle("reduce-motion", motionIsReduced());
 }
 let previousLayout = "";
 function fit() {
@@ -292,7 +321,7 @@ let fileTicks = [...$("#file-ticks").querySelectorAll<HTMLButtonElement>("button
 
 function setMode(next: Mode, animateEntry = true) {
   const previousMode = mode;
-  if (next === "archive" && previousMode === "boot" && !prefs.reduced && animateEntry) {
+  if (next === "archive" && previousMode === "boot" && motionActive("boot") && animateEntry) {
     if (archiveEntry) return;
     const now = performance.now() / 1000;
     const currentTime = frozenTime ?? now - bootStart;
@@ -303,7 +332,7 @@ function setMode(next: Mode, animateEntry = true) {
     }
   }
   archiveEntry = null;
-  rollingTitles.forEach(title => title.update({ animated: !prefs.reduced && next === "archive" }));
+  rollingTitles.forEach(title => title.update({ animated: motionActive("rollingText") && next === "archive" }));
   if (next !== "archive") {
     rollingTitles.forEach(title => title.finish());
     hoverCode.finish();
@@ -326,11 +355,11 @@ function setMode(next: Mode, animateEntry = true) {
   $(".system-nav").inert = next === "boot" || Boolean(modal);
   $(".system-footer").inert = next === "boot" || Boolean(modal);
   if (next === "detail") {
-    if (previousMode !== "detail") detailTransition.show(prefs.reduced);
+    if (previousMode !== "detail") detailTransition.show(!motionActive("detailTransition"));
   } else if (previousMode === "detail" || (next === "boot" && !$("#detail-ui").hidden)) {
     pendingDetailFocus = false;
     tabTransition.cancel();
-    detailTransition.hide(prefs.reduced || next === "boot");
+    detailTransition.hide(!motionActive("detailTransition") || next === "boot");
     if (!modal && next === "archive") $(".read-file").focus({ preventScroll: true });
   }
   $("#detail-ui").inert = next !== "detail" || Boolean(modal);
@@ -394,9 +423,9 @@ function updateSelection(navigation?: ArchiveNavigation) {
   const r = records[selected];
   const { lane } = fileLocation(selected);
   const files = columnFiles(lane);
-  selectionTitle.update({ text: r.title, animated: !prefs.reduced && mode === "archive" });
-  clearanceTitle.update({ text: r.clearance, animated: !prefs.reduced && mode === "archive" });
-  categoryTitle.update({ text: r.category, animated: !prefs.reduced && mode === "archive" });
+  selectionTitle.update({ text: r.title, animated: motionActive("rollingText") && mode === "archive" });
+  clearanceTitle.update({ text: r.clearance, animated: motionActive("rollingText") && mode === "archive" });
+  categoryTitle.update({ text: r.category, animated: motionActive("rollingText") && mode === "archive" });
   const direction =
     navigation && "axis" in navigation
       ? navigation.direction > 0
@@ -405,12 +434,12 @@ function updateSelection(navigation?: ArchiveNavigation) {
       : "auto";
   selectedCode.update({
     value: Number(r.id.slice(2)),
-    animated: !prefs.reduced && mode === "archive",
+    animated: motionActive("rollingNumbers") && mode === "archive",
     direction,
   });
   fileCounter.update({
     value: files.indexOf(selected) + 1,
-    animated: !prefs.reduced && mode === "archive",
+    animated: motionActive("rollingNumbers") && mode === "archive",
     direction:
       navigation && "axis" in navigation && navigation.axis === "row"
         ? direction
@@ -419,13 +448,13 @@ function updateSelection(navigation?: ArchiveNavigation) {
   $(".count-total").textContent = String(files.length).padStart(2, "0");
   columnCounter.update({
     value: lane + 1,
-    animated: !prefs.reduced && mode === "archive",
+    animated: motionActive("rollingNumbers") && mode === "archive",
     direction:
       navigation && "axis" in navigation && navigation.axis === "lane"
         ? direction
         : "auto",
   });
-  columnTitle.update({ text: archiveColumns[lane], animated: !prefs.reduced && mode === "archive" });
+  columnTitle.update({ text: archiveColumns[lane], animated: motionActive("rollingText") && mode === "archive" });
   $<HTMLButtonElement>('[data-action="column-prev"]').disabled = false;
   $<HTMLButtonElement>('[data-action="column-next"]').disabled = false;
   if (fileTicks.length !== files.length) {
@@ -449,7 +478,7 @@ function replayBootAfterModal(forcePreview: boolean) {
   bootStart = performance.now() / 1000 - 1.76;
   frozenTime = null;
   lastStep = "";
-  setMode(prefs.reduced && !forcePreview ? "archive" : "boot");
+  setMode(!motionActive("boot") && !forcePreview ? "archive" : "boot");
   audio.restartBoot();
   scene.select(0);
   selected = 0;
@@ -478,7 +507,7 @@ function renderDetail() {
   <div class="detail-footnote"><span>${String(selected + 1).padStart(3, "0")} / ${String(records.length).padStart(3, "0")}</span></div>`;
   $("#detail-content").scrollTop = 0;
   $("#detail-content").setAttribute("tabindex", "-1");
-  documentDecryption.reset($("#detail-content"), prefs.reduced || scene.decryptionFrame.phase === "clear");
+  documentDecryption.reset($("#detail-content"), !motionActive("documentReveal") || scene.decryptionFrame.phase === "clear");
   setTab(activeTab, false);
 }
 function overview() {
@@ -514,7 +543,7 @@ function setTab(tab: string, sound = true) {
   $("#tab-panel").scrollTop = 0;
   documentDecryption.refresh();
   if (sound) {
-    tabTransition.reveal($("#tab-panel"), prefs.reduced);
+    tabTransition.reveal($("#tab-panel"), !motionActive("surfaceTransitions"));
     audio.play("ui-tick");
   }
 }
@@ -549,7 +578,7 @@ function closeModal(afterClose?: () => void) {
   if (modalClosing) return;
   modalClosing = true;
   audio.play("page-close");
-  modalTransition!.hide(prefs.reduced, () => {
+  modalTransition!.hide(!motionActive("surfaceTransitions"), () => {
     modal = null;
     modalClosing = false;
     $("#modal-root").replaceChildren();
@@ -570,7 +599,7 @@ function renderModal() {
   const backdrop = $(".modal-backdrop");
   backdrop.hidden = true;
   modalTransition = new SurfaceTransition(backdrop, $(".terminal-modal"));
-  modalTransition.show(prefs.reduced);
+  modalTransition.show(!motionActive("surfaceTransitions"));
   if (modal === "settings") updateQualitySummary();
   if (modal !== "settings") {
     renderResults();
@@ -616,13 +645,13 @@ function updateQualitySummary() {
   const metrics = JSON.parse(canvas.parentElement?.dataset.renderQuality ?? "{}");
   summary.textContent = `实际渲染 ${canvas.width} × ${canvas.height} · ${prefs.rendering.antialias === "smaa" ? "SMAA" : "原始抗锯齿"} · 纹理 ${metrics.anisotropy ?? 1}×${metrics.limited ? " · 已达到缓冲上限" : ""}`;
 }
-function motionSettingsMarkup() {
-  return `<div id="motion-preference-note" class="motion-preference-note"><p>${prefs.reduced
-    ? `当前已减少动态效果。${matchMedia("(prefers-reduced-motion: reduce)").matches ? "系统也请求减少动画，可仅为本站启用完整动效。" : "关闭上方开关可恢复完整动效。"}`
-    : "当前使用完整动效。"}</p>${prefs.reduced ? '<button data-action="enable-motion">启用完整动效并重播 ↻</button>' : ""}</div>`;
+function motionPreferenceNoteMarkup() {
+  const preset = prefs.motionPreset;
+  const allEnabled = Object.values(prefs.motion).every(Boolean);
+  return `<div id="motion-preference-note" class="motion-preference-note"><p>${preset === "system" ? `跟随系统 · ${motionSummary(prefs.motion)}` : motionSummary(prefs.motion)}</p><span>预设：${preset === "full" ? "完整动画" : preset === "reduced" ? "减少动画" : preset === "system" ? "跟随系统" : "自定义"}${systemReduced ? " · 系统偏好为减少动画" : ""}</span>${allEnabled ? "" : '<button data-action="enable-motion">启用完整动画并重播 ↻</button>'}</div>`;
 }
 function settingsMarkup() {
-  return `<h2>SYSTEM SETTINGS<small>终端偏好设置</small></h2><p class="settings-intro">RNDYT <span>·</span> PUBLIC READING</p><div class="settings-list">${audioSettingsMarkup(prefs)}<label><div><strong>REDUCED MOTION</strong><span>跳过开机动画，简化选档、镜头和文字动效</span></div><input type="checkbox" data-pref="reduced" ${prefs.reduced ? "checked" : ""}/><i class="toggle"></i></label></div>${motionSettingsMarkup()}${qualityMarkup(prefs.rendering)}${pwaSettingsMarkup()}<div class="settings-shortcuts"><span>KEYBOARD CONTROLS</span><p><kbd>←</kbd><kbd>→</kbd> 切列 <kbd>↑</kbd><kbd>↓</kbd> 选档 <kbd>ENTER</kbd> 读取 <kbd>/</kbd> 检索 <kbd>ESC</kbd> 返回</p></div><div class="settings-bottom">${document.fullscreenEnabled ? '<button data-action="fullscreen">FULLSCREEN <span>↗</span></button>' : ''}<button data-action="restart">REINITIALIZE SYSTEM <span>↻</span></button></div><div class="modal-bottom"><span>ANALYSIS OS / 1.0 · 使用 MiSans 字体（小米） <a href="${assetUrl("fonts/MiSans-license.pdf")}" target="_blank" rel="noopener">字体许可</a></span><span>界面基于 <a href="https://github.com/LBEILC/RhineLabUI" target="_blank" rel="noopener">RhineLabUI · LBEILC</a> / MIT</span></div>`;
+  return `<h2>SYSTEM SETTINGS<small>终端偏好设置</small></h2><p class="settings-intro">RNDYT <span>·</span> PUBLIC READING</p><div class="settings-list">${audioSettingsMarkup(prefs)}</div>${motionPreferenceNoteMarkup()}${motionSettingsMarkup(prefs.motion, prefs.motionPreset)}${qualityMarkup(prefs.rendering)}${pwaSettingsMarkup()}<div class="settings-shortcuts"><span>KEYBOARD CONTROLS</span><p><kbd>←</kbd><kbd>→</kbd> 切列 <kbd>↑</kbd><kbd>↓</kbd> 选档 <kbd>ENTER</kbd> 读取 <kbd>/</kbd> 检索 <kbd>ESC</kbd> 返回</p></div><div class="settings-bottom">${document.fullscreenEnabled ? '<button data-action="fullscreen">FULLSCREEN <span>↗</span></button>' : ''}<button data-action="restart">REINITIALIZE SYSTEM <span>↻</span></button></div><div class="modal-bottom"><span>ANALYSIS OS / 1.0 · 使用 MiSans 字体（小米） <a href="${assetUrl("fonts/MiSans-license.pdf")}" target="_blank" rel="noopener">字体许可</a></span><span>界面基于 <a href="https://github.com/LBEILC/RhineLabUI" target="_blank" rel="noopener">RhineLabUI · LBEILC</a> / MIT</span></div>`;
 }
 
 document.addEventListener("input", (e) => {
@@ -654,9 +683,24 @@ document.addEventListener("change", (e) => {
   }
   if (el.dataset.pref) {
     const key = el.dataset.pref;
-    if (key === "sound" || key === "music" || key === "reduced" || key === "quality") prefs[key] = el.checked;
+    if (key === "sound" || key === "music" || key === "quality") prefs[key] = el.checked;
     if (key === "sound" || key === "music") saveAudioPrefs(); else savePrefs();
-    if (key === "reduced") $("#motion-preference-note").outerHTML = motionSettingsMarkup();
+    audio.play("confirm");
+  }
+  if (el.dataset.motion) {
+    const key = el.dataset.motion as MotionKey;
+    prefs.motion[key] = el.checked;
+    prefs.motionPreset = "custom";
+    savePrefs();
+    const motionRoot = $("#motion-settings");
+    const settingsPanel = motionRoot.closest<HTMLElement>(".settings-modal");
+    const scrollTop = settingsPanel?.scrollTop ?? 0;
+    motionRoot.outerHTML = motionSettingsMarkup(prefs.motion, prefs.motionPreset);
+    $("#motion-preference-note").outerHTML = motionPreferenceNoteMarkup();
+    requestAnimationFrame(() => {
+      if (settingsPanel) settingsPanel.scrollTop = scrollTop;
+      document.querySelector<HTMLInputElement>(`[data-motion="${key}"]`)?.focus({ preventScroll: true });
+    });
     audio.play("confirm");
   }
 });
@@ -668,7 +712,7 @@ document.addEventListener("click", (e) => {
   if (el.dataset.heading) {
     const id = el.dataset.heading;
     setTab("overview");
-    document.getElementById(id)?.scrollIntoView({ block: "start", behavior: prefs.reduced ? "instant" : "smooth" });
+    document.getElementById(id)?.scrollIntoView({ block: "start", behavior: motionActive("smoothScroll") ? "smooth" : "instant" });
     return;
   }
   if (el.dataset.select) {
@@ -701,6 +745,20 @@ document.addEventListener("click", (e) => {
     setTab(el.dataset.tab);
     return;
   }
+  if (el.dataset.action === "motion-preset") {
+    const preset = el.dataset.preset;
+    prefs.motionPreset = preset === "system" || preset === "full" || preset === "reduced" ? preset : "custom";
+    prefs.motion = preset === "full"
+      ? fullMotion()
+      : preset === "reduced"
+        ? reducedMotion()
+        : createMotionPreferences(undefined, undefined, systemReduced);
+    savePrefs();
+    renderModal();
+    requestAnimationFrame(() => document.querySelector<HTMLButtonElement>(`[data-action="motion-preset"][data-preset="${prefs.motionPreset}"]`)?.focus({ preventScroll: true }));
+    audio.play("confirm");
+    return;
+  }
   const action = el.dataset.action;
   if (action === "article-index") location.assign(assetUrl("blog/"));
   if (action === "sound-preview") audio.play("confirm");
@@ -720,12 +778,13 @@ document.addEventListener("click", (e) => {
     viewer ??= new ModelViewer($("#stage"), () => { audio.setScene(mode); audio.play("page-close"); }, (sound) => audio.play(sound === "tick" ? "ui-tick" : sound));
     audio.setScene("viewer");
     viewer.setQuality(prefs.rendering);
+    viewer.setMotion(prefs.motion);
     scene.finishDecryption();
     viewer.open(
       records[selected].id,
       records[selected].title,
       () => scene.createAssemblyModel(),
-      prefs.reduced,
+      !motionActive("viewerNavigation"),
     );
     audio.play("page-open");
   }
@@ -753,7 +812,8 @@ document.addEventListener("click", (e) => {
     replayBoot();
   }
   if (action === "enable-motion") {
-    prefs.reduced = false;
+    prefs.motion = fullMotion();
+    prefs.motionPreset = "full";
     savePrefs();
     replayBoot();
   }
@@ -944,7 +1004,7 @@ function frame(ms: number) {
   }
   viewer?.update(time);
   if (scene && mode === "detail") {
-    documentDecryption.update(time, scene.decryptionFrame, prefs.reduced);
+    documentDecryption.update(time, scene.decryptionFrame, !motionActive("documentReveal"));
     $("#detail-content").style.opacity = String(scene.detailVisibility);
     $("#detail-content").style.transform =
       `translateY(${(1 - scene.detailVisibility) * 18}px)`;
@@ -1001,7 +1061,7 @@ async function start() {
         hoverTitle.finish();
         return;
       }
-      const animated = !prefs.reduced && mode === "archive";
+      const animated = motionActive("rollingText") && mode === "archive";
       hoverCode.update({
         value: Number(records[i].id.slice(2)),
         animated: !label.hidden && animated,
@@ -1034,11 +1094,11 @@ function completeStartup(silent: boolean) {
   }
   audio.releaseEntry();
   audio.restartBoot();
-  const fade = prefs.reduced ? 0 : 600;
+  const fade = motionActive("boot") ? 600 : 0;
   bootStart = performance.now() / 1000 - (reviewParams.has("time") ? Number(reviewParams.get("time")) : 1.76);
   if (!reviewParams.has("time")) bootStart += fade / 1000;
   setMode("boot");
-  if (reviewParams.get("scene") === "archive" || (prefs.reduced && !reviewParams.has("time"))) setMode("archive");
+  if (reviewParams.get("scene") === "archive" || (!motionActive("boot") && !reviewParams.has("time"))) setMode("archive");
   if (reviewParams.get("scene") === "detail") setMode("detail");
   if (new URL(location.href).searchParams.has("post")) applyPostRoute();
   $("#stage").inert = false;
@@ -1094,8 +1154,8 @@ Object.assign(window, {
       mode,
       ready,
       startup: started ? "started" : entry?.phase ?? "loading",
-      motion: { reduced: prefs.reduced, systemReduced: matchMedia("(prefers-reduced-motion: reduce)").matches },
-      bootTime: mode === "boot" ? started ? (archiveEntry?.time ?? frozenTime ?? performance.now() / 1000 - bootStart) + 5 : 6.76 : null,
+      motion: { reduced: motionIsReduced(), preset: prefs.motionPreset, systemReduced },
+      bootTime: mode === "boot" ? started ? (frozenTime ?? performance.now() / 1000 - bootStart) + 5 : 6.76 : null,
       selected: records[selected].id,
       saved: [...saved],
       audio: audio.stats(),
