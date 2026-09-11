@@ -42,7 +42,7 @@ $("#stage").innerHTML = `
   <header class="brand">${brandHeading}</header>
   <nav class="system-nav" aria-label="系统导航">
     <button data-action="search"><span class="nav-glyph">⌕</span> ARCHIVE INDEX <span class="key">/</span></button>
-    <button data-action="saved" aria-label="查看收藏档案" title="收藏档案">＋ SAVED <span id="saved-count">00</span></button>
+    <button data-action="article-index" aria-label="文章目录 / 直接阅读" title="文章目录 / 直接阅读">文章目录 <span aria-hidden="true">↗</span></button>
     <button class="settings-button" data-action="settings" aria-label="系统设置" title="系统设置"><span class="settings-glyph" aria-hidden="true">◷</span><span class="settings-label">设置</span></button>
   </nav>
   <button id="skip" class="skip" data-action="skip">ENTER SYSTEM <span>↗</span></button>
@@ -424,7 +424,6 @@ function updateSelection(navigation?: ArchiveNavigation) {
     button.classList.toggle("selected", index === selected);
     button.setAttribute("aria-pressed", String(index === selected));
   });
-  $("#saved-count").textContent = String(saved.size).padStart(2, "0");
 }
 function replayBoot(forcePreview = false) {
   if (!ready) return;
@@ -455,7 +454,6 @@ function toggleSaved() {
   try {
     localStorage.setItem("rndyt-blog-saved", JSON.stringify([...saved]));
   } catch {}
-  $("#saved-count").textContent = String(saved.size).padStart(2, "0");
   const button = $<HTMLButtonElement>('[data-action="bookmark"]');
   const added = saved.has(id);
   button.firstChild!.textContent = added ? "− REMOVE FROM SAVED" : "＋ SAVE ARCHIVE";
@@ -705,6 +703,7 @@ document.addEventListener("click", (e) => {
     return;
   }
   const action = el.dataset.action;
+  if (action === "article-index") location.assign(assetUrl("blog/"));
   if (action === "sound-preview") audio.play("confirm");
   if (action === "skip") {
     setMode("archive");
