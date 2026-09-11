@@ -465,7 +465,12 @@ function renderDetail() {
 }
 function overview() {
   const r = records[selected];
-  return `${r.preview ? '<p class="blog-preview">示例内容 · 尚未替换为真实文章或项目资料。</p>' : ''}<div class="blog-prose">${r.bodyHtml}</div>`;
+  const template = document.createElement("template");
+  template.innerHTML = r.bodyHtml;
+  const paragraphs = [...template.content.querySelectorAll("p")];
+  const paragraph = paragraphs.find((node) => !node.closest("blockquote")) ?? paragraphs[0];
+  const summary = paragraph?.outerHTML ?? "<p>暂无摘要。</p>";
+  return `<div class="panel-label">ABSTRACT / 摘要</div>${r.preview ? '<p class="blog-preview">示例内容 · 尚未替换为真实文章或项目资料。</p>' : ''}<div class="blog-prose">${summary}</div>`;
 }
 function setTab(tab: string, sound = true) {
   if (sound && tab === activeTab) return;
