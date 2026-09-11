@@ -122,7 +122,6 @@ let modalTransition: SurfaceTransition | undefined;
 let modalClosing = false;
 let modalSiblings: { node: HTMLElement; inert: boolean }[] = [];
 let pendingDetailFocus = false;
-let bookmarkFeedback: Animation | undefined;
 function readLocal<T>(key: string, fallback: T): T {
   try {
     return JSON.parse(localStorage.getItem(key) ?? "null") ?? fallback;
@@ -227,7 +226,6 @@ function savePrefs() {
     detailTransition.finish();
     modalTransition?.finish();
     tabTransition.cancel();
-    bookmarkFeedback?.cancel();
   }
   scene?.setReduced(prefs.reduced);
   scene?.setQuality(prefs.rendering);
@@ -447,26 +445,6 @@ function openFile() {
     audio.play("open");
   });
 }
-function toggleSaved() {
-  const id = records[selected].id;
-  if (saved.has(id)) saved.delete(id);
-  else saved.add(id);
-  try {
-    localStorage.setItem("rndyt-blog-saved", JSON.stringify([...saved]));
-  } catch {}
-  const button = $<HTMLButtonElement>('[data-action="bookmark"]');
-  const added = saved.has(id);
-  button.firstChild!.textContent = added ? "− REMOVE FROM SAVED" : "＋ SAVE ARCHIVE";
-  button.querySelector("span")!.textContent = added ? "已收藏" : "收藏档案";
-  button.setAttribute("aria-pressed", String(added));
-  bookmarkFeedback?.cancel();
-  if (!prefs.reduced) bookmarkFeedback = button.animate(
-    [{ backgroundColor: "#67634c" }, { backgroundColor: "#252820" }],
-    { duration: 220, easing: "ease-out" },
-  );
-  audio.play("confirm");
-  notify(saved.has(id) ? "档案已加入收藏" : "已取消收藏");
-}
 function renderDetail() {
   tabTransition.cancel();
   const r = records[selected];
@@ -478,12 +456,10 @@ function renderDetail() {
   <dl class="metadata"><div><dt>TAGS / 标签</dt><dd>${escapeHtml(r.department)}</dd></div><div><dt>DATE / 日期</dt><dd>${escapeHtml(r.date)}</dd></div><div><dt>AUTHOR / 作者</dt><dd>${escapeHtml(r.lead)}</dd></div><div><dt>STATUS / 状态</dt><dd><i></i>${r.preview ? "示例内容 · 预览" : "已发布 · 可阅读"}</dd></div></dl>
   <div class="detail-tabs" role="tablist"><button id="tab-overview" class="active" role="tab" aria-controls="tab-panel" aria-selected="true" data-tab="overview">01 <span>正文</span></button><button id="tab-notes" role="tab" aria-controls="tab-panel" aria-selected="false" data-tab="notes">02 <span>目录</span></button><button id="tab-history" role="tab" aria-controls="tab-panel" aria-selected="false" data-tab="history">03 <span>相关文章</span></button><i class="tab-indicator" aria-hidden="true"></i></div>
   <div id="tab-panel" class="tab-panel" role="tabpanel">${overview()}</div>
-  <div class="detail-actions"><button class="solid-button" data-action="bookmark">${saved.has(r.id) ? "− REMOVE FROM SAVED" : "＋ SAVE ARCHIVE"}<span>${saved.has(r.id) ? "已收藏" : "收藏档案"}</span></button><a class="export-button" href="${assetUrl(`archives/RNDYT-${r.id}.txt`)}" download="RNDYT-${r.id}.txt" aria-label="导出 ${r.id} 档案">EXPORT <span>↓</span></a></div>
-  <div class="blog-reading-actions"><a href="${escapeHtml(r.source)}">展开阅读 ↗</a><button data-action="copy-link">复制文章链接</button></div>
+  <div class="detail-actions"><a class="solid-button" href="${escapeHtml(r.source)}" aria-label="查看文章">VIEW<span>查看</span></a><button class="export-button" data-action="copy-link" aria-label="复制文件链接">复制链接</button></div>
   <div class="detail-footnote"><a href="/blog/">全部文章 ↗</a><span>${String(selected + 1).padStart(3, "0")} / ${String(records.length).padStart(3, "0")}</span></div>`;
   $("#detail-content").scrollTop = 0;
   $("#detail-content").setAttribute("tabindex", "-1");
-  $('[data-action="bookmark"]').setAttribute("aria-pressed", String(saved.has(r.id)));
   documentDecryption.reset($("#detail-content"), prefs.reduced || scene.decryptionFrame.phase === "clear");
   setTab(activeTab, false);
 }
@@ -739,13 +715,10 @@ document.addEventListener("click", (e) => {
     openModal(action);
   }
   if (action === "close-modal") closeModal();
-  if (action === "bookmark") toggleSaved();
   if (action === "copy-link") {
-    const url = new URL(location.href);
-    url.search = "";
-    url.searchParams.set("post", records[selected].slug);
-    void navigator.clipboard?.writeText(url.href).then(() => notify("文章链接已复制"), () => notify("请复制地址栏中的文章链接"));
-    if (!navigator.clipboard) notify("请复制地址栏中的文章链接");
+    const url = new URL(records[selected].source, location.href);
+    void navigator.clipboard?.writeText(url.href).then(() => notify("文件链接已复制"), () => notify(`复制失败，文件链接：${url.href}`));
+    if (!navigator.clipboard) notify(`文件链接：${url.href}`);
   }
   if (action === "reset-search") {
     modal = "search";

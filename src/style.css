@@ -883,6 +883,7 @@ button {
   gap: 30px;
 }
 .solid-button {
+  text-decoration: none;
   background: #252820;
   color: #f0eee5;
   height: 46px;
