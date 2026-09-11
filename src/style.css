@@ -387,7 +387,10 @@ button {
   margin-left: 6px;
 }
 .settings-glyph {
-  font-size: 27px;
+  display: block;
+  width: 23px;
+  height: 23px;
+  flex: 0 0 23px;
 }
 .archive-ui {
   opacity: 0;

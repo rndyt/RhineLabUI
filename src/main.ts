@@ -43,7 +43,7 @@ $("#stage").innerHTML = `
   <nav class="system-nav" aria-label="系统导航">
     <button data-action="search"><span class="nav-glyph">⌕</span> ARCHIVE INDEX <span class="key">/</span></button>
     <button data-action="article-index" aria-label="文章目录 / 直接阅读" title="文章目录 / 直接阅读">文章目录 <span aria-hidden="true">↗</span></button>
-    <button class="settings-button" data-action="settings" aria-label="系统设置" title="系统设置"><span class="settings-glyph" aria-hidden="true">◷</span><span class="settings-label">设置</span></button>
+    <button class="settings-button" data-action="settings" aria-label="系统设置" title="系统设置"><svg class="settings-glyph" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9"/><path d="M12 3v9h9" stroke-linejoin="round"/></svg><span class="settings-label">设置</span></button>
   </nav>
   <button id="skip" class="skip" data-action="skip">ENTER SYSTEM <span>↗</span></button>
   <section id="boot" class="boot" aria-label="系统启动">
