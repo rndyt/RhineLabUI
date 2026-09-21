@@ -889,6 +889,10 @@ let lastTime = 0,
   frameCount = 0,
   frameStart = performance.now(),
   fps = 0;
+// Opt-in local diagnostic: compare first visible 3D frames with steady frames.
+const measureStartup = import.meta.env.DEV && reviewParams.has("startupMetrics");
+const startupFrames: { time: number; renderMs: number; frameMs: number }[] = [];
+let previousStartupFrame = 0;
 function frame(ms: number) {
   if (document.hidden) { requestAnimationFrame(frame); return; }
   const time = ms / 1000;
@@ -897,7 +901,18 @@ function frame(ms: number) {
       ? bootFrame(frozenTime ?? time - bootStart)
       : undefined;
   // The calibrated 2D opening fully covers the scene until array entry.
+  const renderStart = measureStartup ? performance.now() : 0;
   if (!viewer?.isOpen && (!cinema || cinema.time >= 21.9)) scene?.update(time, cinema);
+  if (measureStartup && cinema && cinema.time >= 21.8 && cinema.time < 25) {
+    if (startupFrames.length && cinema.time < startupFrames[startupFrames.length - 1].time) {
+      startupFrames.length = 0;
+      previousStartupFrame = 0;
+    }
+    startupFrames.push({ time: cinema.time, renderMs: performance.now() - renderStart,
+      frameMs: previousStartupFrame ? ms - previousStartupFrame : 0 });
+    $("#stage").dataset.startupMetrics = JSON.stringify(startupFrames);
+    previousStartupFrame = ms;
+  }
   viewer?.update(time);
   if (scene && mode === "detail") {
     documentDecryption.update(time, scene.decryptionFrame, prefs.reduced);
@@ -969,6 +984,7 @@ async function start() {
       hoverTitle.update({ animated });
     };
     savePrefs();
+    await scene.prepareOpening();
     ready = true;
     select(0);
     if (entry) entry.ready();

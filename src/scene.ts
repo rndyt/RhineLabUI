@@ -369,6 +369,46 @@ export class ArchiveScene {
     this.loaded = true;
   }
 
+  /** Initialize the real render passes while the opaque loading screen is up.
+   * Loading the GLB alone does not compile shaders or allocate postprocessing
+   * targets. Use a visible array pose, then restore the opening's first pose.
+   * Neither render advances the opening/audio clock, which starts afterwards.
+   */
+  async prepareOpening() {
+    if (!this.loaded || this.last !== 0) return;
+    // Only run before startup. Preserve the interactive starting state as well
+    // as the cinematic one: direct article links and reduced motion skip boot.
+    const initial = {
+      last: this.last, clock: this.clock, reveal: this.reveal, detail: this.detail,
+      scanTime: this.scanTime, scanBlend: this.scanBlend, idleGain: this.idleGain,
+      pulseGain: this.pulseGain, clearance: this.clearance, canInspect: this.canInspect,
+      pulses: this.pulses, lift: { ...this.lift }, rail: { ...this.rail },
+      shoulder: { ...this.shoulder }, laneFocus: { ...this.laneFocus },
+      columnCamera: { ...this.columnCamera }, cameraAim: this.cameraAim.clone(),
+    };
+    const cameraPosition = this.camera.position.clone();
+    const cameraRotation = this.camera.quaternion.clone();
+    const fieldOfView = this.camera.fov;
+    const modelPosition = this.model.position.clone();
+    const modelRotation = this.model.quaternion.clone();
+    try {
+      await new Promise<void>(resolve => requestAnimationFrame(() => resolve()));
+      this.update(performance.now() / 1000, { time: 24, reveal: 1, lift: 0, zoom: 0 });
+      await new Promise<void>(resolve => requestAnimationFrame(() => resolve()));
+      this.update(performance.now() / 1000, { time: 21.9, reveal: 0, lift: 0, zoom: 0 });
+    } finally {
+      Object.assign(this, initial);
+      this.camera.position.copy(cameraPosition);
+      this.camera.quaternion.copy(cameraRotation);
+      this.camera.fov = fieldOfView;
+      this.camera.updateProjectionMatrix();
+      this.camera.updateMatrixWorld();
+      this.model.position.copy(modelPosition);
+      this.model.quaternion.copy(modelRotation);
+      this.decryption.update(0, false, this.reduced);
+    }
+  }
+
   private assemblyTemplate?: Promise<THREE.Group>;
   async createAssemblyModel() {
     this.assemblyTemplate ??= new GLTFLoader()
