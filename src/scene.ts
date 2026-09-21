@@ -71,6 +71,7 @@ export class ArchiveScene {
   private cells: ArchiveCell[] = [];
   private selectedCell: ArchiveCell = { lane: 2, row: 12 };
   private looping = false;
+  private cinematicFrame = false;
   private coordinateOrigin: ArchiveCell = { lane: 0, row: 0 };
   private lift = { value: 0, velocity: 0 };
   private rail = { value: 0, velocity: 0 };
@@ -379,6 +380,7 @@ export class ArchiveScene {
     // Only run before startup. Preserve the interactive starting state as well
     // as the cinematic one: direct article links and reduced motion skip boot.
     const initial = {
+      cinematicFrame: this.cinematicFrame,
       last: this.last, clock: this.clock, reveal: this.reveal, detail: this.detail,
       scanTime: this.scanTime, scanBlend: this.scanBlend, idleGain: this.idleGain,
       pulseGain: this.pulseGain, clearance: this.clearance, canInspect: this.canInspect,
@@ -481,6 +483,15 @@ export class ArchiveScene {
     else this.decryption.leave();
     if (mode === "hidden") this.decryption.select();
     if (mode !== "archive") this.pendingPulse = null;
+    if (!this.looping && mode !== "hidden" && this.cinematicFrame) {
+      // Cinematic instances use world X directly; interactive instances subtract
+      // columnCamera. Move the camera origin by that exact same amount before
+      // interpolation, so this coordinate rebase cannot look like a new slide.
+      const offsetX = -this.columnCamera.value;
+      this.camera.position.x += offsetX;
+      this.cameraAim.x += offsetX;
+      this.camera.updateMatrixWorld();
+    }
     this.looping = mode !== "hidden";
     if (!this.looping) {
       const canonical = fileLocation(this.selectedRecord);
@@ -1047,6 +1058,7 @@ export class ArchiveScene {
     this.last = time;
     this.clock = time;
     if (!this.loaded) return;
+    this.cinematicFrame = Boolean(cinematic);
     const blend = 1 - Math.exp(-dt * (this.reduced ? 35 : 2.8));
     this.reveal = cinematic
       ? cinematic.reveal
