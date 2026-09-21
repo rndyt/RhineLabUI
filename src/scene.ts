@@ -1051,14 +1051,17 @@ export class ArchiveScene {
   }
   update(
     time: number,
-    cinematic?: { reveal: number; lift: number; zoom: number; time: number },
+    cinematic?: { reveal: number; lift: number; zoom: number; time: number; browseEntry?: boolean },
   ) {
     const elapsed = Math.max(0, time - this.last || 0.016);
     const dt = Math.min(elapsed, 0.05);
     this.last = time;
     this.clock = time;
     if (!this.loaded) return;
-    this.cinematicFrame = Boolean(cinematic);
+    // Normal entry already uses the browsing origin and looping window.
+    // Only original-film playback needs a coordinate rebase at handoff.
+    const browseEntry = Boolean(cinematic?.browseEntry);
+    this.cinematicFrame = Boolean(cinematic && !browseEntry);
     const blend = 1 - Math.exp(-dt * (this.reduced ? 35 : 2.8));
     this.reveal = cinematic
       ? cinematic.reveal
@@ -1130,14 +1133,14 @@ export class ArchiveScene {
     }
     // Keep the illuminated set near the origin. Lateral navigation is a track
     // movement of the whole array, just like the existing front/back rail.
-    const trackX = cinematic ? 0 : this.columnCamera.value;
+    const trackX = cinematic && !browseEntry ? 0 : this.columnCamera.value;
     const center = {
       lane: this.columnCamera.value / COLUMN_SPACING + 2,
       row: (-this.rail.value - 2.17) / ROW_SPACING + 15.5,
     };
     for (let i = 0; i < this.positions.length; i++) {
       this.cells[i] =
-        cinematic || !this.looping ? poolCell(i) : visibleCell(i, center);
+        !browseEntry && (cinematic || !this.looping) ? poolCell(i) : visibleCell(i, center);
       this.positions[i].set(
         (this.cells[i].lane - 2) * COLUMN_SPACING,
         -4.6,
@@ -1323,7 +1326,7 @@ export class ArchiveScene {
       this.dummy.rotation.set(slope * 0.024 * (1 - detail), 0, 0);
       this.dummy.scale.setScalar(
         hidden.has(cellKey(this.cells[i])) ||
-          ((cinematic || !this.looping) && i >= 160)
+          (!browseEntry && (cinematic || !this.looping) && i >= 160)
           ? 0
           : 1,
       );
@@ -1370,7 +1373,10 @@ export class ArchiveScene {
       THREE.MathUtils.lerp(-2.55 + 0.4 * orbit, -0.045, settle),
       THREE.MathUtils.lerp(2.48, 0.481, settle),
     );
+    // Reach the responsive browsing camera before releasing interaction.
+    const entryFinish = browseEntry ? ease((shot - 24.25) / (26.56 - 24.25)) : 0;
     const cameraAim = arrayAim.clone();
+    if (browseEntry) cameraAim.x -= trackX;
     const viewDirection = new THREE.Vector3(
       -Math.sin(yaw) * Math.cos(elevation),
       Math.sin(elevation),
@@ -1456,7 +1462,9 @@ export class ArchiveScene {
     }
     const framing = archiveFraming(this.container.clientWidth, this.container.clientHeight, span, detail,
       this.container.closest<HTMLElement>("[data-layout]")?.dataset.layout === "compact");
-    if (!cinematic) {
+    if (!cinematic || browseEntry) {
+      const entryAim = cameraAim.clone();
+      cameraAim.copy(arrayAim);
       const right = new THREE.Vector3()
         .crossVectors(new THREE.Vector3(0, 1, 0), viewDirection)
         .normalize();
@@ -1478,13 +1486,15 @@ export class ArchiveScene {
       detailAim.addScaledVector(right, (0.5 - framing.detailX) * width / pixelScale);
       detailAim.addScaledVector(up, (framing.detailY - 0.5) * height / pixelScale);
       cameraAim.lerp(detailAim, detail);
+      if (browseEntry) cameraAim.lerpVectors(entryAim, cameraAim.clone(), entryFinish);
     }
     const cameraPosition = cameraAim
       .clone()
       .addScaledVector(viewDirection, distance);
-    if (!cinematic && !this.reduced) {
-      cameraPosition.x += this.pointer.x * 0.12;
-      cameraPosition.y -= this.pointer.y * 0.12;
+    if ((!cinematic || browseEntry) && !this.reduced) {
+      const pointerBlend = browseEntry ? entryFinish : 1;
+      cameraPosition.x += this.pointer.x * 0.12 * pointerBlend;
+      cameraPosition.y -= this.pointer.y * 0.12 * pointerBlend;
     }
     const cameraBlend = cinematic ? 1 : 1 - Math.exp(-dt * 5);
     this.camera.position.lerp(cameraPosition, cameraBlend);
@@ -1493,7 +1503,7 @@ export class ArchiveScene {
     this.camera.fov = THREE.MathUtils.lerp(
       this.camera.fov,
       THREE.MathUtils.radToDeg(
-        2 * Math.atan((cinematic ? THREE.MathUtils.lerp(span, 5.9, detail) : framing.span) / (2 * distance)),
+        2 * Math.atan((cinematic ? THREE.MathUtils.lerp(THREE.MathUtils.lerp(span, 5.9, detail), framing.span, entryFinish) : framing.span) / (2 * distance)),
       ),
       cameraBlend,
     );

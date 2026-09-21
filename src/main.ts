@@ -96,6 +96,7 @@ let modal: "search" | "saved" | "settings" | null = null,
 let activeTab = "overview";
 let restoringRoute = false;
 let archiveEntry: ArchiveEntry | null = null;
+let browsingEntryLayout = false;
 const reviewParams = new URLSearchParams(location.search);
 let frozenTime =
   reviewParams.get("freeze") === "1"
@@ -246,7 +247,7 @@ function fit() {
   const stage = $("#stage");
   const viewport = $("#viewport");
   const coarse = matchMedia("(pointer: coarse)").matches;
-  const { width, height, scale, kind } = viewportLayout(viewport.clientWidth, viewport.clientHeight, coarse, mode === "boot");
+  const { width, height, scale, kind } = viewportLayout(viewport.clientWidth, viewport.clientHeight, coarse, mode === "boot" && !browsingEntryLayout);
   stage.style.width = `${width}px`;
   stage.style.height = `${height}px`;
   stage.style.transform = `translate(-50%, -50%) scale(${scale})`;
@@ -308,6 +309,7 @@ function setMode(next: Mode, animateEntry = true) {
     hoverCode.finish();
     $("#hover-label").hidden = true;
   }
+  if (next === "boot") browsingEntryLayout = false;
   mode = next;
   audio.setScene(next);
   if (next !== "boot" && audioPreview) {
@@ -316,7 +318,7 @@ function setMode(next: Mode, animateEntry = true) {
     audio.configure(prefs);
   }
   $("#stage").dataset.mode = next;
-  if (previousMode !== next) fit();
+  if (previousMode !== next || next === "boot") fit();
   $("#boot").inert = next !== "boot";
   $("#boot").setAttribute("aria-hidden", String(next !== "boot"));
   $("#archive-ui").inert = next !== "archive" || Boolean(modal);
@@ -917,9 +919,14 @@ function frame(ms: number) {
   const cinema = mode === "boot" && ready
     ? bootFrame(referencePlayback ? bootTime : Math.min(bootTime, ARRAY_ENTRY_END))
     : undefined;
+  if (cinema && !referencePlayback && cinema.time >= 21.9 && !browsingEntryLayout) {
+    browsingEntryLayout = true;
+    fit();
+  }
+  const sceneCinema = cinema ? { ...cinema, browseEntry: !referencePlayback } : undefined;
   // The calibrated 2D opening fully covers the scene until array entry.
   const renderStart = measureStartup ? performance.now() : 0;
-  if (!viewer?.isOpen && (!cinema || cinema.time >= 21.9)) scene?.update(time, cinema);
+  if (!viewer?.isOpen && (!cinema || cinema.time >= 21.9)) scene?.update(time, sceneCinema);
   if (measureStartup && cinema && cinema.time >= 21.8 && cinema.time < 25) {
     if (startupFrames.length && cinema.time < startupFrames[startupFrames.length - 1].time) {
       startupFrames.length = 0;

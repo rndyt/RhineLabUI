@@ -29,7 +29,29 @@ try {
     const after = scene.getStats();
     near(after.cameraPosition[0] - after.modelPosition[0], before.cameraPosition[0] - before.modelPosition[0], `${mode}: camera/card X relation is continuous`);
   }
-  result.textContent = JSON.stringify({passed:true,checks}, null, 2);
+  for (const [width, height] of [[1920,1080], [1440,1080], [2560,1080], [390,844]]) {
+    const container = document.querySelector('#scene');
+    container.style.width = `${width}px`;
+    container.style.height = `${height}px`;
+    scene.resize();
+    scene.setMode('hidden');
+    scene.select(0);
+    scene.update(10, {time:26.56,reveal:1,lift:.4,zoom:0,browseEntry:true});
+    const entryEnd = scene.getStats();
+    const cells = JSON.stringify(scene.cells);
+    const camera = scene.camera.position.clone();
+    scene.setMode('archive');
+    near(scene.camera.position.distanceTo(camera), 0, `${width}x${height}: no origin jump`);
+    for (let i = 1; i <= 120; i++) {
+      scene.update(10 + i / 120);
+      const actual = scene.getStats();
+      near(actual.topLeft[0], entryEnd.topLeft[0], `${width}x${height} frame ${i}: X`);
+      near(actual.topLeft[1], entryEnd.topLeft[1], `${width}x${height} frame ${i}: Y`);
+      near(actual.fieldOfView, entryEnd.fieldOfView, `${width}x${height} frame ${i}: FOV`);
+      if (JSON.stringify(scene.cells) !== cells) throw Error('visible array window changed on handoff');
+    }
+  }
+  result.textContent = JSON.stringify({passed:true,count:checks.length,checks:checks.filter(name => !name.includes(" frame "))}, null, 2);
   result.dataset.passed = 'true';
 } catch(error) {
   result.textContent = JSON.stringify({passed:false,checks,error:String(error)},null,2);
