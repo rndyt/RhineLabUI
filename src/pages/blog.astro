@@ -1,0 +1,7 @@
+---
+import { getCollection } from 'astro:content';
+import { indexPage } from '../../scripts/blog-content.mjs';
+const records = (await getCollection('posts')).map(entry => entry.data);
+const categories = [...new Set(records.map(record => record.category))];
+---
+<Fragment set:html={indexPage(records, categories)} />

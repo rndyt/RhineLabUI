@@ -1,5 +1,7 @@
 import { defineConfig } from "vite";
 import { readFileSync } from "node:fs";
+import { readFile } from "node:fs/promises";
+import { resolve, extname, sep } from "node:path";
 import { createHash } from "node:crypto";
 import { exportBlog } from "./scripts/export-records.mjs";
 
@@ -11,16 +13,25 @@ const models = ["archive-cassette", "archive-assembly"].map(name => {
   return { key:`assets/${name}.glb`, fileName:`assets/${name}.${hash}.glb`, source };
 });
 export default defineConfig({
+  configFile: false,
   define: { __RHINE_MODELS__: JSON.stringify(Object.fromEntries(models.map(model => [model.key,model.fileName]))) },
   plugins: [{
     name: "blog-markdown",
     configureServer(server) {
-      server.middlewares.use((req, _res, next) => {
-        const url = new URL(req.url ?? "/", "http://localhost");
-        if (/^\/(blog|posts\/[a-z0-9-]+)\/?$/.test(url.pathname)) {
-          req.url = url.pathname.replace(/\/?$/, "/index.html") + url.search;
-        }
-        next();
+      // Keep the local frame-by-frame review pages available after the Astro migration.
+      const referenceRoot = resolve("reference");
+      server.middlewares.use(async (req, res, next) => {
+        const pathname = new URL(req.url ?? "/", "http://localhost").pathname;
+        if (!pathname.startsWith("/reference/") || /\.(?:ts|js|mjs)$/.test(pathname)) return next();
+        try {
+          const file = resolve("." + decodeURIComponent(pathname));
+          if (!file.startsWith(referenceRoot + sep)) return next();
+          const extension = extname(file);
+          const types: Record<string, string> = { ".html": "text/html", ".css": "text/css", ".png": "image/png", ".jpg": "image/jpeg", ".svg": "image/svg+xml", ".glb": "model/gltf-binary", ".json": "application/json" };
+          const bytes = await readFile(file);
+          res.setHeader("Content-Type", types[extension] ?? "application/octet-stream");
+          res.end(extension === ".html" ? await server.transformIndexHtml(pathname, bytes.toString()) : bytes);
+        } catch { next(); }
       });
       let timer: ReturnType<typeof setTimeout>;
       let pending = Promise.resolve();

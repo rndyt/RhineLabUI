@@ -6,18 +6,21 @@
   "type": "module",
   "scripts": {
     "predev": "node scripts/export-records.mjs",
-    "dev": "vite --host 127.0.0.1",
+    "dev": "astro dev --host 127.0.0.1",
     "prebuild": "node scripts/export-records.mjs",
     "check:content": "node --experimental-strip-types --test scripts/check-content.mjs",
     "check:viewport": "node --experimental-strip-types scripts/check-viewport.mjs",
     "review:mobile": "node scripts/serve-mobile-review.mjs",
     "export:archives": "node scripts/export-records.mjs",
-    "build": "tsc && vite build && node scripts/build-pwa.mjs",
-    "format": "prettier --write src scripts index.html package.json tsconfig.json",
-    "preview": "vite preview --host 127.0.0.1"
+    "build": "astro sync && tsc && astro build && node scripts/build-pwa.mjs",
+    "format": "prettier --write src scripts package.json tsconfig.json",
+    "preview": "astro preview --host 127.0.0.1",
+    "sync:blog": "node scripts/sync-obsidian-blog.mjs",
+    "check:sync": "node --test scripts/check-obsidian-sync.mjs"
   },
   "dependencies": {
     "@kitlangton/rolling-number": "0.4.1",
+    "astro": "7.3.3",
     "three": "^0.183.0"
   },
   "devDependencies": {
@@ -28,5 +31,8 @@
     "typescript": "^5.9.3",
     "vite": "^7.3.1",
     "yaml": "2.9.0"
+  },
+  "engines": {
+    "node": ">=22.12.0"
   }
 }

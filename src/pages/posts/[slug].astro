@@ -1,0 +1,10 @@
+---
+import { getCollection } from 'astro:content';
+import { readerPage } from '../../../scripts/blog-content.mjs';
+export async function getStaticPaths() {
+  const records = (await getCollection('posts')).map(entry => entry.data);
+  return records.map(record => ({ params: { slug: record.slug }, props: { record, records } }));
+}
+const { record, records } = Astro.props;
+---
+<Fragment set:html={readerPage(record, records)} />

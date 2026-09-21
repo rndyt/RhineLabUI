@@ -10,7 +10,7 @@ test('Markdown sources, runtime content, standalone pages and exports agree', as
   assert.deepEqual(await readPosts(), content);
   for (const r of content.records) {
     assert.equal(await readFile(new URL(`../public/archives/RNDYT-${r.id}.txt`, import.meta.url), 'utf8'), archiveText(r));
-    const html = await readFile(new URL(`../public/posts/${r.slug}/index.html`, import.meta.url), 'utf8');
+    const html = await readFile(new URL(`../dist/posts/${r.slug}/index.html`, import.meta.url), 'utf8');
     assert.ok(html.includes(r.bodyHtml));
     assert.ok(html.includes(`/?post=${r.slug}`));
     assert.ok(html.includes('noindex, nofollow'));
@@ -39,7 +39,9 @@ test('variable column lengths, negative coordinates, wraparound and rebasing pre
 });
 test('article IDs can remain stable when reordered or when an earlier post is deleted', () => {
   const edited=structuredClone(content); edited.records.reverse(); validateContent(edited);
-  edited.records=edited.records.filter(r=>r.id!==content.records[0].id); validateContent(edited);
+  edited.records.push({...edited.records[0], id:'X-999998', slug:'stable-test', source:'/posts/stable-test/'});
+  edited.records=edited.records.filter(r=>r.id!==content.records[0].id);
+  edited.columns=edited.categories=[...new Set(edited.records.map(r=>r.category))]; validateContent(edited);
 });
 for (const [name,mutate] of [
  ['duplicate ID',c=>c.records[1].id=c.records[0].id],
@@ -51,7 +53,7 @@ for (const [name,mutate] of [
  ['unknown category',c=>c.records[0].category='unknown'],
  ['duplicate category',c=>c.columns.push(c.columns[0])],
  ['empty corpus',c=>c.records=[]],
-]) test(`rejects ${name}`,()=>{const edited=structuredClone(content);mutate(edited);assert.throws(()=>validateContent(edited))});
+]) test(`rejects ${name}`,()=>{const edited=structuredClone(content); if(edited.records.length===1) edited.records.push({...edited.records[0], id:'X-999999', slug:'second-test', source:'/posts/second-test/'});mutate(edited);assert.throws(()=>validateContent(edited))});
 test('Markdown preserves structure and code while rejecting executable HTML and dangerous URLs',()=>{
  const {bodyHtml,headings}=renderMarkdown('# Intro\n\n## Same\n\n## Same\n\n```js\nconst x = "<script>";\n```\n\n<script>alert(1)</script>\n\n[x](javascript:alert(1))\n\n<img src="x" onerror="alert(1)">\n\n| A | B |\n| - | - |\n| 1 | 2 |');
  assert.equal(headings.length,3);assert.equal(new Set(headings.map(h=>h.id)).size,3);

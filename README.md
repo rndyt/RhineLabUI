@@ -23,8 +23,12 @@ npm run dev
 
 ## 写文章
 
-编辑 `content/posts/` 中的 Markdown。当前七篇文章是从原博客迁入的**示例内容**，
-并非真实经历或成果。三维界面与独立阅读页均有示例提示，全部页面继续 `noindex`。
+文章现在来自 Obsidian 的 `~/Nutstore Files/ObsidianVault/Blog`，由 Astro 管理内容集合和静态页面。
+先执行 `npm run sync:blog`，再启动开发或构建。完整说明见 [Obsidian 同步](docs/OBSIDIAN_SYNC.md)。
+请在 Obsidian 修改原文；`content/posts/obsidian/` 为同步结果，不要手工改写。
+历史七篇示例移至 `reference/blog-samples/`，不再发布。全部页面继续 `noindex`。
+
+也可以在 `content/posts/` 的其他目录手工维护 Markdown，格式如下：
 
 ```yaml
 ---
@@ -52,23 +56,24 @@ kind: article
 - `preview` 默认为 true。换成真实内容后可逐篇关闭示例提示；搜索引擎开放需单独调整站点预览策略。
 - 开发服务器监听 Markdown 增删改并重新生成；构建前也会自动生成。
 
-`content/archives.json`、`public/archives/`、`public/posts/` 和 `public/blog/index.html`
-都是生成结果，请修改 Markdown 后运行 `npm run export:archives`，不要直接编辑输出。
+`content/archives.json` 与 `public/archives/` 是生成结果，请勿直接编辑。
+Astro 页面源文件位于 `src/pages/`，文章目录和阅读页在构建时生成到 `dist/`。
 原游戏档案数据保存在 `reference/original-archives.json`，不再作为博客内容发布。
 
 ## 验证与构建
 
 ```sh
-npm run export:archives
+npm run sync:blog
+npm run check:sync
+npm run build
 npm run check:content
 npm run check:viewport
-npm run build
 ```
 
-构建输出为 `dist/`，包括三维入口、七篇独立阅读页、文章目录与离线缓存。
+构建输出为 `dist/`，包括三维入口、当前已发布文章的独立阅读页、文章目录与离线缓存。
 内容测试覆盖不等长分类的循环映射、稳定编号、Markdown 清理、生成页面和 TXT 一致性。
 
-本次改造在 `codex/rhine-blog` 分支本地预览，尚未发布或推送到上游。
+本次改造使用 `codex/rhine-blog` 分支。Node.js 要求 22.12 或更新版本。
 验证记录见 [verification/BLOG.md](verification/BLOG.md)。
 
 ## 来源与许可

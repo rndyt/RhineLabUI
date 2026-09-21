@@ -1,224 +1,44 @@
 {
   "categories": [
-    "工程文章",
-    "AI 实践",
-    "项目记录"
+    "AI 实践"
   ],
   "columns": [
-    "工程文章",
-    "AI 实践",
-    "项目记录"
+    "AI 实践"
   ],
   "records": [
     {
-      "id": "X-001",
-      "slug": "observability-loop",
-      "title": "【示例】一次可观测性问题的复盘模板",
+      "id": "X-008",
+      "slug": "post-x-008",
+      "title": "自顶向下的大语言模型基础介绍（一）——从 API 到模型",
       "en": "ARTICLE",
-      "department": "observability / postmortem / systems",
-      "category": "工程文章",
-      "date": "2026-08-09",
-      "lead": "rndyt",
-      "clearance": "PREVIEW / 示例",
-      "abstract": "从现象、假设到验证结果，整理一套适合后端问题复盘的短模板。",
-      "findings": [
-        "从现象、假设到验证结果，整理一套适合后端问题复盘的短模板。"
-      ],
-      "source": "/posts/observability-loop/",
-      "body": "> 这是预览站占位内容，不代表 rndyt 的真实文章。\n\n复盘不是把时间线重新抄一遍，而是把当时看不见的信号补齐。示例模板会保留现象、影响范围、判断分叉和下一次的检测点。",
-      "bodyHtml": "<blockquote>\n<p>这是预览站占位内容，不代表 rndyt 的真实文章。</p>\n</blockquote>\n<p>复盘不是把时间线重新抄一遍，而是把当时看不见的信号补齐。示例模板会保留现象、影响范围、判断分叉和下一次的检测点。</p>\n",
-      "headings": [],
-      "tags": [
-        "observability",
-        "postmortem",
-        "systems"
-      ],
-      "readingMinutes": 1,
-      "preview": true
-    },
-    {
-      "id": "X-002",
-      "slug": "short-note",
-      "title": "【示例短记】先写边界，再写实现",
-      "en": "NOTE",
-      "department": "notes / java",
-      "category": "工程文章",
-      "date": "2026-08-15",
-      "lead": "rndyt",
-      "clearance": "PREVIEW / 示例",
-      "abstract": "一个轻量的工程笔记占位：当边界清楚时，代码往往只是最后一步。",
-      "findings": [
-        "一个轻量的工程笔记占位：当边界清楚时，代码往往只是最后一步。"
-      ],
-      "source": "/posts/short-note/",
-      "body": "> 这是预览站占位内容，不代表 rndyt 的真实文章。\n\n在开始写代码之前，先写下输入、输出和不负责的事情。这个动作很小，却能让后续的测试、评审和复盘拥有共同的参照物。",
-      "bodyHtml": "<blockquote>\n<p>这是预览站占位内容，不代表 rndyt 的真实文章。</p>\n</blockquote>\n<p>在开始写代码之前，先写下输入、输出和不负责的事情。这个动作很小，却能让后续的测试、评审和复盘拥有共同的参照物。</p>\n",
-      "headings": [],
-      "tags": [
-        "notes",
-        "java"
-      ],
-      "readingMinutes": 1,
-      "preview": true
-    },
-    {
-      "id": "X-003",
-      "slug": "slow-decisions",
-      "title": "【示例】慢一点做决定，快一点验证",
-      "en": "ARTICLE",
-      "department": "engineering / decision / backend",
-      "category": "工程文章",
-      "date": "2026-08-18",
-      "lead": "rndyt",
-      "clearance": "PREVIEW / 示例",
-      "abstract": "把工程取舍写成可验证的假设，减少‘凭感觉选技术’的讨论成本。",
-      "findings": [
-        "把工程取舍写成可验证的假设，减少‘凭感觉选技术’的讨论成本。"
-      ],
-      "source": "/posts/slow-decisions/",
-      "body": "> 这是预览站占位内容，不代表 rndyt 的真实文章。\n\n工程讨论里最容易被忽略的部分，不是方案数量，而是我们有没有说清楚**什么结果会让自己改变主意**。\n\n这篇示例文章会从一个后端接口的取舍出发，把背景、约束、候选方案和验证方式放在一起。正式内容会替换这里的案例和数据。",
-      "bodyHtml": "<blockquote>\n<p>这是预览站占位内容，不代表 rndyt 的真实文章。</p>\n</blockquote>\n<p>工程讨论里最容易被忽略的部分，不是方案数量，而是我们有没有说清楚<strong>什么结果会让自己改变主意</strong>。</p>\n<p>这篇示例文章会从一个后端接口的取舍出发，把背景、约束、候选方案和验证方式放在一起。正式内容会替换这里的案例和数据。</p>\n",
-      "headings": [],
-      "tags": [
-        "engineering",
-        "decision",
-        "backend"
-      ],
-      "readingMinutes": 1,
-      "preview": true
-    },
-    {
-      "id": "X-004",
-      "slug": "ai-workflow-placeholder",
-      "title": "【示例】把 AI 放进代码审查循环",
-      "en": "EXPERIMENT",
-      "department": "workflow / code-review / verification",
+      "department": "LLM / Agent",
       "category": "AI 实践",
-      "date": "2026-08-18",
+      "date": "2026-09-10",
       "lead": "rndyt",
-      "clearance": "PREVIEW / 示例",
-      "abstract": "一个占位工作流：让 AI 提出可检验的假设，由人做取舍，再用测试结束循环。",
+      "clearance": "PUBLIC / 公开",
+      "abstract": "现代 Agent 的核心驱动力，始终来源于大语言模型，Harness 的核心，始终是围绕 LLM API 构建的一套控制循环。",
       "findings": [
-        "一个占位工作流：让 AI 提出可检验的假设，由人做取舍，再用测试结束循环。"
+        "现代 Agent 的核心驱动力，始终来源于大语言模型，Harness 的核心，始终是围绕 LLM API 构建的一套控制循环。"
       ],
-      "source": "/posts/ai-workflow-placeholder/",
-      "body": "> 这是预览站占位内容。下方 replay 只用于展示交互结构，不代表真实项目、真实数据或真实模型结果。\n\n## 先定义循环\n\nAI-native 不是把一段 Prompt 放在页面上，而是为一次工作循环留下可检查的输入和输出。这个示例把循环拆成四步：问题、AI 提议、人工判断、验证结果。\n\n## 为什么要保留人工判断\n\n模型可以帮助扩大候选空间，但它不知道哪些约束不能被破坏。人的工作不是替模型润色结论，而是决定哪些建议有资格进入代码和测试。\n\n## 固定 replay\n\n下面的演示使用固定数据，不调用外部模型。正式内容会替换主题、输入输出和验证结果。\n### 01 / define · 定义问题\n\n示例：一段 Java service 在高峰期重复读取同一份配置。目标是找出可复现的风险并给出最小改动建议。\n\n```text\ninput/problem.md\ncontext: repeated config reads\nconstraint: preserve public API\nquestion: where is the avoidable work?\n```\n\n### 02 / propose · 提出假设\n\n模型标出调用链、列出可能的缓存边界，并把不确定的地方写成待验证假设。\n\n```text\nmodel/proposal.txt\nassumption A: config lookup is request-invariant\nassumption B: local cache lifetime is bounded\nconfidence: medium\n```\n\n### 03 / review · 人工判断\n\n人工检查配置的生命周期、并发语义和异常路径，只采纳不改变外部契约的部分。\n\n```text\nreview/decision.md\naccept: memoize lookup per request\nreject: global cache without invalidation\nreason: ownership and staleness risk\n```\n\n### 04 / verify · 验证结果\n\n补充回归测试，再用固定输入记录基准结果。以下输出均为示例，不代表实际项目的验证结果。\n\n```text\nverification/result.txt\nregression: passing (sample)\nbenchmark: captured (sample)\nnext: compare under production-like load\n```\n",
-      "bodyHtml": "<blockquote>\n<p>这是预览站占位内容。下方 replay 只用于展示交互结构，不代表真实项目、真实数据或真实模型结果。</p>\n</blockquote>\n<h2 id=\"section-1\">先定义循环</h2><p>AI-native 不是把一段 Prompt 放在页面上，而是为一次工作循环留下可检查的输入和输出。这个示例把循环拆成四步：问题、AI 提议、人工判断、验证结果。</p>\n<h2 id=\"section-2\">为什么要保留人工判断</h2><p>模型可以帮助扩大候选空间，但它不知道哪些约束不能被破坏。人的工作不是替模型润色结论，而是决定哪些建议有资格进入代码和测试。</p>\n<h2 id=\"section-3\">固定 replay</h2><p>下面的演示使用固定数据，不调用外部模型。正式内容会替换主题、输入输出和验证结果。</p>\n<h3 id=\"section-4\">01 / define · 定义问题</h3><p>示例：一段 Java service 在高峰期重复读取同一份配置。目标是找出可复现的风险并给出最小改动建议。</p>\n<pre><code class=\"language-text\">input/problem.md\ncontext: repeated config reads\nconstraint: preserve public API\nquestion: where is the avoidable work?\n</code></pre>\n<h3 id=\"section-5\">02 / propose · 提出假设</h3><p>模型标出调用链、列出可能的缓存边界，并把不确定的地方写成待验证假设。</p>\n<pre><code class=\"language-text\">model/proposal.txt\nassumption A: config lookup is request-invariant\nassumption B: local cache lifetime is bounded\nconfidence: medium\n</code></pre>\n<h3 id=\"section-6\">03 / review · 人工判断</h3><p>人工检查配置的生命周期、并发语义和异常路径，只采纳不改变外部契约的部分。</p>\n<pre><code class=\"language-text\">review/decision.md\naccept: memoize lookup per request\nreject: global cache without invalidation\nreason: ownership and staleness risk\n</code></pre>\n<h3 id=\"section-7\">04 / verify · 验证结果</h3><p>补充回归测试，再用固定输入记录基准结果。以下输出均为示例，不代表实际项目的验证结果。</p>\n<pre><code class=\"language-text\">verification/result.txt\nregression: passing (sample)\nbenchmark: captured (sample)\nnext: compare under production-like load\n</code></pre>\n",
+      "source": "/posts/post-x-008/",
+      "body": "现代 Agent 的核心驱动力，始终来源于大语言模型，Harness 的核心，始终是围绕 LLM API 构建的一套控制循环。\n\n本文将从典型的 LLM API 出发，自顶向下地梳理这个正在影响人类世界的大语言模型的结构和原理。\n\n``` http\nPOST /v1/responses\nContent-Type: application/json\nAuthorization: Bearer YOUR_API_KEY\n\n{\n  \"model\": \"gpt-5.6\",\n  \"input\": \"什么是 Transformer？\"\n}\n```\n\n这是一个最基本的 Responses API 格式的请求，只有两个字段，model 用于指定调用的模型，input 则是你要交给模型的输入。\n\n事实上，这里的输入并不会就这样直接地交给 LLM，对于 Responses API 的 input 来说，其不只可以接受普通字符串，也可以接受结构化的消息数组。所以输入首先会通过标准化，被规范为模型服务内部统一的消息表示。然而这种结构仍然不能直接作为大语言模型的输入，它还需要经过 Chat Template 的处理。\n\n# Chat Template\n\n当代大语言模型大多采用 Decoder-only Transformer 作为核心架构，其基本目标是**基于已有上下文预测并生成下一个 Token**。\n\n而在实际调用大语言模型时，我们经常会以问题或指令的形式提供输入。那么，一个本质上只负责“预测下一个 Token”的 Decoder-only Transformer，为什么不会继续补全新的问题，或者对指令本身进行续写呢？关键就在于 Chat Template。示例的消息经过 Chat Template 处理后，可能会呈现为下面的形式：\n\n```\n<|im_start|>user\n什么是 Transformer？<|im_end|>\n<|im_start|>assistant\n```\n\n这里采用的是一种典型的 ChatML 风格表示。其中，`<|im_start|>` 和 `<|im_end|>` 用于标记一条消息的开始与结束，`user` 和 `assistant` 则用于区分消息所属的角色。最后出现的 `<|im_start|>assistant` 表示用户消息已经结束，接下来进入 Assistant 的回答阶段。\n\n这套对话格式在模型的指令微调和训练阶段会被大量使用，所以模型学习到了这些标记的语义，当模型开始预测下一个 token 时，其概率最高的后续内容就会是对用户问题的回答。\n\n不过，到这里得到的仍然是由文本和特殊标记组成的字符序列，大语言模型最终是运行在数字计算硬件之上，因此自然语言输入需要被转换为数值形式。\n\n# Tokenizer（分词器）\n\n分词器的作用就是将字符序列切分为多个基本单元，并将每个基本单元映射为一个整数编号，这一基本单元就叫做词元（Token），其对应的数值则称为 Token ID，这套映射集合就是词表（Vocabulary），其作用可以类比为一本用于连接文本符号与数字编号的“字典”。\n\n一种最直观的方法，是将每一个字符都作为独立的 Token，并为其分配一个 Token ID。但单个字符通常只能承载有限的信息，一段文本会因此被拆分成更长的 Token 序列。模型需要通过更多层的上下文计算才能逐渐组合出词语和更高层次的语义，同时也会增加序列长度和计算开销。\n\n另一个极端是直接将每一个完整单词都作为一个 Token。这样虽然可以减少常见词所占用的 Token 数量，但自然语言中的词汇数量非常庞大，而且还会不断出现新词。如果全部加入词表，会导致词表规模迅速膨胀，且没有出现在词表中的词无法被模型处理。\n\n因此，现代大语言模型通常采用**子词分词（Subword Tokenization）**。它的核心思想是在“字符”和“完整单词”之间寻找平衡：高频出现的字符组合或单词可以作为完整 Token 保留下来，而低频或未见过的词则可以进一步拆分成更小的子词、字符甚至字节单元。\n\n例如：\n\n```text\nplaying\n```\n\n可能被切分为：\n\n```text\n[\"play\", \"ing\"]\n```\n\n这样既能够用较少的 Token 表示常见内容，又能够通过已有的基本单元组合出训练时没有完整见过的新词。\n\n以字节对编码（Byte-Pair Encoding, BPE）为例，其核心思路可以理解为以下过程：\n1. 初始化：将所有语料库中出现的基本字符放入词表\n2. 迭代合并：统计语料库中所有相邻词元对的出现频率，将出现频率最高的一对合并为一个新的词元放入词表\n3. 重复：重复第二步，直到词表达到预设的大小。\n\n假设我们的语料库为`{\"cat\": 3, \"car\": 2, \"cap\": 1, \"bat\": 1}`，目标词表大小为10，那么合并过程如下表所示：\n\n| 步骤   | 最高频词元对  |  频率 | 合并为   | 新增词元                 | 词表大小 |\n| ---- | ------- | --: | ----- | -------------------- | ---: |\n| 初始化  | -       |   - | -     | `{c, a, t, r, p, b}` |    6 |\n| 合并 1 | `c, a`  |   6 | `ca`  | `ca`                 |    7 |\n| 合并 2 | `ca, t` |   3 | `cat` | `cat`                |    8 |\n| 合并 3 | `ca, r` |   2 | `car` | `car`                |    9 |\n| 合并 4 | `ca, p` |   1 | `cap` | `cap`                |   10 |\n\n最后的完整词表为：`{ c, a, t, r, p, b, ca, cat, car, cap }`\n\n不同的模型或模型家族通常会有自己配套的分词器和词表，它们在模型训练阶段就会与模型参数绑定，因此是不能随意替换的。同时，模型分词器和词表的区别也会影响到模型的性能表现。",
+      "bodyHtml": "<p>现代 Agent 的核心驱动力，始终来源于大语言模型，Harness 的核心，始终是围绕 LLM API 构建的一套控制循环。</p>\n<p>本文将从典型的 LLM API 出发，自顶向下地梳理这个正在影响人类世界的大语言模型的结构和原理。</p>\n<pre><code class=\"language-http\">POST /v1/responses\nContent-Type: application/json\nAuthorization: Bearer YOUR_API_KEY\n\n{\n  \"model\": \"gpt-5.6\",\n  \"input\": \"什么是 Transformer？\"\n}\n</code></pre>\n<p>这是一个最基本的 Responses API 格式的请求，只有两个字段，model 用于指定调用的模型，input 则是你要交给模型的输入。</p>\n<p>事实上，这里的输入并不会就这样直接地交给 LLM，对于 Responses API 的 input 来说，其不只可以接受普通字符串，也可以接受结构化的消息数组。所以输入首先会通过标准化，被规范为模型服务内部统一的消息表示。然而这种结构仍然不能直接作为大语言模型的输入，它还需要经过 Chat Template 的处理。</p>\n<h1 id=\"section-1\">Chat Template</h1><p>当代大语言模型大多采用 Decoder-only Transformer 作为核心架构，其基本目标是<strong>基于已有上下文预测并生成下一个 Token</strong>。</p>\n<p>而在实际调用大语言模型时，我们经常会以问题或指令的形式提供输入。那么，一个本质上只负责“预测下一个 Token”的 Decoder-only Transformer，为什么不会继续补全新的问题，或者对指令本身进行续写呢？关键就在于 Chat Template。示例的消息经过 Chat Template 处理后，可能会呈现为下面的形式：</p>\n<pre><code>&lt;|im_start|&gt;user\n什么是 Transformer？&lt;|im_end|&gt;\n&lt;|im_start|&gt;assistant\n</code></pre>\n<p>这里采用的是一种典型的 ChatML 风格表示。其中，<code>&lt;|im_start|&gt;</code> 和 <code>&lt;|im_end|&gt;</code> 用于标记一条消息的开始与结束，<code>user</code> 和 <code>assistant</code> 则用于区分消息所属的角色。最后出现的 <code>&lt;|im_start|&gt;assistant</code> 表示用户消息已经结束，接下来进入 Assistant 的回答阶段。</p>\n<p>这套对话格式在模型的指令微调和训练阶段会被大量使用，所以模型学习到了这些标记的语义，当模型开始预测下一个 token 时，其概率最高的后续内容就会是对用户问题的回答。</p>\n<p>不过，到这里得到的仍然是由文本和特殊标记组成的字符序列，大语言模型最终是运行在数字计算硬件之上，因此自然语言输入需要被转换为数值形式。</p>\n<h1 id=\"section-2\">Tokenizer（分词器）</h1><p>分词器的作用就是将字符序列切分为多个基本单元，并将每个基本单元映射为一个整数编号，这一基本单元就叫做词元（Token），其对应的数值则称为 Token ID，这套映射集合就是词表（Vocabulary），其作用可以类比为一本用于连接文本符号与数字编号的“字典”。</p>\n<p>一种最直观的方法，是将每一个字符都作为独立的 Token，并为其分配一个 Token ID。但单个字符通常只能承载有限的信息，一段文本会因此被拆分成更长的 Token 序列。模型需要通过更多层的上下文计算才能逐渐组合出词语和更高层次的语义，同时也会增加序列长度和计算开销。</p>\n<p>另一个极端是直接将每一个完整单词都作为一个 Token。这样虽然可以减少常见词所占用的 Token 数量，但自然语言中的词汇数量非常庞大，而且还会不断出现新词。如果全部加入词表，会导致词表规模迅速膨胀，且没有出现在词表中的词无法被模型处理。</p>\n<p>因此，现代大语言模型通常采用<strong>子词分词（Subword Tokenization）</strong>。它的核心思想是在“字符”和“完整单词”之间寻找平衡：高频出现的字符组合或单词可以作为完整 Token 保留下来，而低频或未见过的词则可以进一步拆分成更小的子词、字符甚至字节单元。</p>\n<p>例如：</p>\n<pre><code class=\"language-text\">playing\n</code></pre>\n<p>可能被切分为：</p>\n<pre><code class=\"language-text\">[\"play\", \"ing\"]\n</code></pre>\n<p>这样既能够用较少的 Token 表示常见内容，又能够通过已有的基本单元组合出训练时没有完整见过的新词。</p>\n<p>以字节对编码（Byte-Pair Encoding, BPE）为例，其核心思路可以理解为以下过程：</p>\n<ol>\n<li>初始化：将所有语料库中出现的基本字符放入词表</li>\n<li>迭代合并：统计语料库中所有相邻词元对的出现频率，将出现频率最高的一对合并为一个新的词元放入词表</li>\n<li>重复：重复第二步，直到词表达到预设的大小。</li>\n</ol>\n<p>假设我们的语料库为<code>{\"cat\": 3, \"car\": 2, \"cap\": 1, \"bat\": 1}</code>，目标词表大小为10，那么合并过程如下表所示：</p>\n<table>\n<thead>\n<tr>\n<th>步骤</th>\n<th>最高频词元对</th>\n<th>频率</th>\n<th>合并为</th>\n<th>新增词元</th>\n<th>词表大小</th>\n</tr>\n</thead>\n<tbody><tr>\n<td>初始化</td>\n<td>-</td>\n<td>-</td>\n<td>-</td>\n<td><code>{c, a, t, r, p, b}</code></td>\n<td>6</td>\n</tr>\n<tr>\n<td>合并 1</td>\n<td><code>c, a</code></td>\n<td>6</td>\n<td><code>ca</code></td>\n<td><code>ca</code></td>\n<td>7</td>\n</tr>\n<tr>\n<td>合并 2</td>\n<td><code>ca, t</code></td>\n<td>3</td>\n<td><code>cat</code></td>\n<td><code>cat</code></td>\n<td>8</td>\n</tr>\n<tr>\n<td>合并 3</td>\n<td><code>ca, r</code></td>\n<td>2</td>\n<td><code>car</code></td>\n<td><code>car</code></td>\n<td>9</td>\n</tr>\n<tr>\n<td>合并 4</td>\n<td><code>ca, p</code></td>\n<td>1</td>\n<td><code>cap</code></td>\n<td><code>cap</code></td>\n<td>10</td>\n</tr>\n</tbody></table>\n<p>最后的完整词表为：<code>{ c, a, t, r, p, b, ca, cat, car, cap }</code></p>\n<p>不同的模型或模型家族通常会有自己配套的分词器和词表，它们在模型训练阶段就会与模型参数绑定，因此是不能随意替换的。同时，模型分词器和词表的区别也会影响到模型的性能表现。</p>\n",
       "headings": [
         {
           "id": "section-1",
-          "text": "先定义循环"
+          "text": "Chat Template"
         },
         {
           "id": "section-2",
-          "text": "为什么要保留人工判断"
-        },
-        {
-          "id": "section-3",
-          "text": "固定 replay"
-        },
-        {
-          "id": "section-4",
-          "text": "01 / define · 定义问题"
-        },
-        {
-          "id": "section-5",
-          "text": "02 / propose · 提出假设"
-        },
-        {
-          "id": "section-6",
-          "text": "03 / review · 人工判断"
-        },
-        {
-          "id": "section-7",
-          "text": "04 / verify · 验证结果"
+          "text": "Tokenizer（分词器）"
         }
       ],
       "tags": [
-        "workflow",
-        "code-review",
-        "verification"
+        "LLM",
+        "Agent"
       ],
-      "readingMinutes": 3,
-      "preview": true
-    },
-    {
-      "id": "X-005",
-      "slug": "tool-boundaries",
-      "title": "【示例】工具边界比工具数量更重要",
-      "en": "NOTE",
-      "department": "tools / constraints / ai-native",
-      "category": "AI 实践",
-      "date": "2026-08-11",
-      "lead": "rndyt",
-      "clearance": "PREVIEW / 示例",
-      "abstract": "占位实验记录：如何为 AI 工具设定上下文、权限和退出条件。",
-      "findings": [
-        "占位实验记录：如何为 AI 工具设定上下文、权限和退出条件。"
-      ],
-      "source": "/posts/tool-boundaries/",
-      "body": "> 这是预览站占位内容，不代表 rndyt 的真实实验。\n\n当工具可以读写更多上下文时，效率和风险会一起增长。示例记录会围绕三条边界展开：它能看到什么、可以改变什么，以及什么时候必须停下来交还判断。",
-      "bodyHtml": "<blockquote>\n<p>这是预览站占位内容，不代表 rndyt 的真实实验。</p>\n</blockquote>\n<p>当工具可以读写更多上下文时，效率和风险会一起增长。示例记录会围绕三条边界展开：它能看到什么、可以改变什么，以及什么时候必须停下来交还判断。</p>\n",
-      "headings": [],
-      "tags": [
-        "tools",
-        "constraints",
-        "ai-native"
-      ],
-      "readingMinutes": 1,
-      "preview": true
-    },
-    {
-      "id": "X-006",
-      "slug": "backend-case-placeholder",
-      "title": "【示例项目】面向业务接口的稳定性改造",
-      "en": "CASE-STUDY",
-      "department": "java / spring / reliability",
-      "category": "项目记录",
-      "date": "2026-08-12",
-      "lead": "rndyt",
-      "clearance": "PREVIEW / 示例",
-      "abstract": "一个 Java 后端项目案例占位：从重复访问和边界不清开始，整理架构取舍与验证路径。",
-      "findings": [
-        "一个 Java 后端项目案例占位：从重复访问和边界不清开始，整理架构取舍与验证路径。"
-      ],
-      "source": "/posts/backend-case-placeholder/",
-      "body": "这是预览站占位项目。正式内容会补充真实背景、个人职责、关键约束、可公开的结果和复盘，不会放置不可公开的源码链接。",
-      "bodyHtml": "<p>这是预览站占位项目。正式内容会补充真实背景、个人职责、关键约束、可公开的结果和复盘，不会放置不可公开的源码链接。</p>\n",
-      "headings": [],
-      "tags": [
-        "java",
-        "spring",
-        "reliability"
-      ],
-      "readingMinutes": 1,
-      "preview": true
-    },
-    {
-      "id": "X-007",
-      "slug": "workflow-lab-placeholder",
-      "title": "【示例项目】AI-native workflow lab",
-      "en": "CASE-STUDY",
-      "department": "ai-native / workflow / tooling",
-      "category": "项目记录",
-      "date": "2026-08-05",
-      "lead": "rndyt",
-      "clearance": "PREVIEW / 示例",
-      "abstract": "一个用于记录 AI 参与研发过程的实验项目占位，强调可复现和可回放。",
-      "findings": [
-        "一个用于记录 AI 参与研发过程的实验项目占位，强调可复现和可回放。"
-      ],
-      "source": "/posts/workflow-lab-placeholder/",
-      "body": "这是预览站占位项目。正式内容会展示一个真实的工作流切片，以及它如何通过固定输入、人工检查和回归验证降低不确定性。",
-      "bodyHtml": "<p>这是预览站占位项目。正式内容会展示一个真实的工作流切片，以及它如何通过固定输入、人工检查和回归验证降低不确定性。</p>\n",
-      "headings": [],
-      "tags": [
-        "ai-native",
-        "workflow",
-        "tooling"
-      ],
-      "readingMinutes": 1,
-      "preview": true
+      "readingMinutes": 7,
+      "preview": false
     }
   ]
 }

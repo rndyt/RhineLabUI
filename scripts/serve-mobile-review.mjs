@@ -1,13 +1,14 @@
 // Local-only phone review server. Reports contain timing and browser metrics.
-import { createServer } from "vite";
+import { dev } from "astro";
 import { mkdir, writeFile } from "node:fs/promises";
 import { resolve } from "node:path";
 import { randomUUID } from "node:crypto";
 
 const output = resolve(".tools/mobile-calibration");
 await mkdir(output, { recursive: true });
-const server = await createServer({
-  server: { host: "0.0.0.0", port: 5189, strictPort: true },
+await dev({
+  server: { host: "0.0.0.0", port: 5189 },
+  vite: { server: { strictPort: true },
   plugins: [{
     name: "local-mobile-calibration",
     configureServer(server) {
@@ -34,7 +35,6 @@ const server = await createServer({
       });
     },
   }],
+  },
 });
-await server.listen();
-server.printUrls();
 console.log("Open /reference/mobile-review.html on the phone; keep the tab visible during measurement.");

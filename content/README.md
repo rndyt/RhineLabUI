@@ -1,10 +1,11 @@
 # 博客内容
 
-内容源为 `posts/**/*.md`。元数据格式和写作步骤见 [项目说明](../README.md#写文章)。
+文章来源为 Obsidian `Blog` 目录，通过 `npm run sync:blog` 同步到 `posts/obsidian/`。
+来源、属性、附件及发布步骤见 [同步说明](../docs/OBSIDIAN_SYNC.md)。
 
-`archives.json` 是构建脚本生成的三维界面数据，不能手动编辑。
-`npm run export:archives` 同时更新该文件、独立阅读页和 TXT 下载。
-开发服务器会在 Markdown 文件增删改时刷新内容；构建也会自动生成。
+不要手工修改同步文章；`.obsidian-sync-manifest.json` 记录稳定编号和地址，必须保留并提交。
+其他 `posts/**/*.md` 可手工维护，但要满足 [元数据格式](../README.md#写文章)。
 
-原版五类、每类八篇的限制已经移除。空分类不生成，文章编号和 slug 必须唯一。
-不要重用删除文章的 ID，以免收藏指向另一篇文章。
+`archives.json` 与 `public/archives/` 由构建脚本生成，Astro 内容集合读取同一份档案数据，
+生成 `/blog/` 和 `/posts/<slug>/`。开发服务器会监听项目 Markdown 的增删改，构建也会自动生成。
+历史样例已移至 `reference/blog-samples/`，不参与发布。
