@@ -1,3 +1,4 @@
+import { ArchiveEntry, ARRAY_ENTRY_END } from "./archive-entry";
 import { InspectionOverlay } from "./inspection-overlay";
 import { DocumentDecryption } from "./document-decryption";
 import "./document-decryption.css";
@@ -94,6 +95,7 @@ let modal: "search" | "saved" | "settings" | null = null,
   filter = "全部档案";
 let activeTab = "overview";
 let restoringRoute = false;
+let archiveEntry: ArchiveEntry | null = null;
 const reviewParams = new URLSearchParams(location.search);
 let frozenTime =
   reviewParams.get("freeze") === "1"
@@ -287,8 +289,19 @@ $("#file-ticks").innerHTML = columnFiles(fileLocation(selected).lane)
   .join("");
 let fileTicks = [...$("#file-ticks").querySelectorAll<HTMLButtonElement>("button")];
 
-function setMode(next: Mode) {
+function setMode(next: Mode, animateEntry = true) {
   const previousMode = mode;
+  if (next === "archive" && previousMode === "boot" && !prefs.reduced && animateEntry) {
+    if (archiveEntry) return;
+    const now = performance.now() / 1000;
+    const currentTime = frozenTime ?? now - bootStart;
+    if (currentTime < ARRAY_ENTRY_END) {
+      archiveEntry = new ArchiveEntry(currentTime, Math.max(now, bootStart + 1.76));
+      frozenTime = null;
+      return;
+    }
+  }
+  archiveEntry = null;
   rollingTitles.forEach(title => title.update({ animated: !prefs.reduced && next === "archive" }));
   if (next !== "archive") {
     rollingTitles.forEach(title => title.finish());
@@ -325,6 +338,9 @@ function setMode(next: Mode) {
     $(".file-title").firstChild!.textContent = "POST NUMBER: ";
     $("#stage").dataset.boot = "done";
     $("#cinema-caption").textContent = "";
+  }
+  if (previousMode === "boot" && next === "archive" && !modal) {
+    $(".read-file").focus({ preventScroll: true });
   }
   if (next === "detail" && previousMode !== "detail") {
     renderDetail();
@@ -896,10 +912,11 @@ let previousStartupFrame = 0;
 function frame(ms: number) {
   if (document.hidden) { requestAnimationFrame(frame); return; }
   const time = ms / 1000;
-  const cinema =
-    mode === "boot" && ready
-      ? bootFrame(frozenTime ?? time - bootStart)
-      : undefined;
+  const referencePlayback = reviewParams.has("time") || reviewParams.get("review") === "1";
+  const bootTime = archiveEntry ? archiveEntry.advance(time) : frozenTime ?? time - bootStart;
+  const cinema = mode === "boot" && ready
+    ? bootFrame(referencePlayback ? bootTime : Math.min(bootTime, ARRAY_ENTRY_END))
+    : undefined;
   // The calibrated 2D opening fully covers the scene until array entry.
   const renderStart = measureStartup ? performance.now() : 0;
   if (!viewer?.isOpen && (!cinema || cinema.time >= 21.9)) scene?.update(time, cinema);
@@ -912,6 +929,11 @@ function frame(ms: number) {
       frameMs: previousStartupFrame ? ms - previousStartupFrame : 0 });
     $("#stage").dataset.startupMetrics = JSON.stringify(startupFrames);
     previousStartupFrame = ms;
+  }
+  // Normal startup ends in browsing. Explicit reference playback retains the
+  // full original extraction/inspection timeline for frame-by-frame review.
+  if (archiveEntry?.finished || (mode === "boot" && cinema && cinema.time >= ARRAY_ENTRY_END && !referencePlayback)) {
+    setMode("archive", false);
   }
   viewer?.update(time);
   if (scene && mode === "detail") {
@@ -1056,7 +1078,7 @@ Object.assign(window, {
       bootStart = performance.now() / 1000 - t;
       lastStep = "";
     },
-    archive: () => setMode("archive"),
+    archive: () => setMode("archive", false),
     detail: () => openFile(),
     select: (i: number) => select(i),
     stats: () => ({
@@ -1066,7 +1088,7 @@ Object.assign(window, {
       ready,
       startup: started ? "started" : entry?.phase ?? "loading",
       motion: { reduced: prefs.reduced, systemReduced: matchMedia("(prefers-reduced-motion: reduce)").matches },
-      bootTime: mode === "boot" ? started ? (frozenTime ?? performance.now() / 1000 - bootStart) + 5 : 6.76 : null,
+      bootTime: mode === "boot" ? started ? (archiveEntry?.time ?? frozenTime ?? performance.now() / 1000 - bootStart) + 5 : 6.76 : null,
       selected: records[selected].id,
       saved: [...saved],
       audio: audio.stats(),
