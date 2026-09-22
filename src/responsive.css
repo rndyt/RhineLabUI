@@ -96,7 +96,6 @@
 [data-layout="portrait"] .system-nav { gap: 8px; }
 [data-layout="portrait"] .search-label-full { display: none; }
 [data-layout="portrait"] .search-label-compact { display: inline; }
-[data-layout="portrait"] .system-nav button[data-action="article-index"] { font-size: 10px; }
 [data-layout="portrait"] .archive-callout { left: var(--edge); top: auto; bottom: 205px; width: calc(100% - 2 * var(--edge)); }
 [data-layout="portrait"] .archive-counter { bottom: 58px; }
 [data-layout="portrait"] .column-navigation { bottom: 58px; }

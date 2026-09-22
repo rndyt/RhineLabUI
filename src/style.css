@@ -1708,6 +1708,9 @@ button {
 [data-mode="detail"] .powered {
   bottom: 108px;
 }
+[data-mode="detail"] .view-toggle {
+  display: none;
+}
 [data-mode="detail"] .archive-ui {
   opacity: 0;
   pointer-events: none;

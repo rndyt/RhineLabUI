@@ -9,15 +9,17 @@ const content = await loadContent();
 test('Markdown sources, runtime content, standalone pages and exports agree', async () => {
   assert.deepEqual(await readPosts(), content);
   const indexHtml = await readFile(new URL('../dist/blog/index.html', import.meta.url), 'utf8');
-  assert.match(indexHtml, /class="reader-view-toggle/);
-  assert.ok(indexHtml.includes('进入三维档案'));
+  assert.match(indexHtml, /class="reader-back/);
+  assert.ok(indexHtml.includes('返回档案'));
   for (const r of content.records) {
     assert.equal(await readFile(new URL(`../public/archives/RNDYT-${r.id}.txt`, import.meta.url), 'utf8'), archiveText(r));
     const html = await readFile(new URL(`../dist/posts/${r.slug}/index.html`, import.meta.url), 'utf8');
     assert.ok(html.includes(r.bodyHtml));
-    assert.match(html, /class="reader-view-toggle/);
+    assert.match(html, /class="reader-back/);
+    assert.ok(html.includes('返回档案'));
+    assert.doesNotMatch(html, /reader-view-toggle/);
     assert.ok(html.includes(`/?post=${r.slug}`));
-    assert.ok(html.includes('返回档案详情'));
+    assert.ok(html.includes('返回档案'));
     assert.ok(!html.includes('在三维档案中打开'));
     assert.ok(html.includes('noindex, nofollow'));
   }

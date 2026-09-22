@@ -82,7 +82,7 @@ $("#stage").innerHTML = `
     <article id="detail-content" class="detail-content"></article>
   </section>
   <div class="powered">POWERED BY <b>RHINELAB UI</b><i></i></div>
-  <footer class="system-footer"><span><i class="status-light"></i> PUBLIC READING</span><span>RNDYT <i>／</i> <span id="clock">00:00:00</span></span><div class="footer-actions"><button class="view-toggle" data-action="view-toggle" aria-label="切换到二维文章页面" title="切换到二维文章页面"><span class="view-toggle-option">2D</span><i class="view-toggle-track" aria-hidden="true"><b></b></i><span class="view-toggle-option is-current">3D</span></button><button data-action="replay" title="重播启动流程">REINITIALIZE ↗</button></div></footer>
+  <footer class="system-footer"><span><i class="status-light"></i> PUBLIC READING</span><span>RNDYT <i>／</i> <span id="clock">00:00:00</span></span><div class="footer-actions"><button class="view-toggle" data-action="view-toggle" aria-label="切换到二维文章目录" title="切换到二维文章目录"><span class="view-toggle-option">2D</span><i class="view-toggle-track" aria-hidden="true"><b></b></i><span class="view-toggle-option is-current">3D</span></button><button data-action="replay" title="重播启动流程">REINITIALIZE ↗</button></div></footer>
   <div id="pwa-update-notice" class="pwa-update-notice" role="status" hidden><span>新版本已就绪</span><button data-pwa-action="update">更新并重启 ↻</button></div>
   <div id="modal-root"></div><div id="toast" class="toast" role="status"></div>
   <div id="loading" class="loading"><div class="loading-mark">${logo}</div><span>CONNECTING TO PERSONAL ARCHIVE</span><i></i></div>
@@ -773,7 +773,7 @@ document.addEventListener("click", (e) => {
   }
   const action = el.dataset.action;
   if (action === "view-toggle") {
-    location.assign(assetUrl(mode === "detail" ? records[selected].source : "blog/"));
+    location.assign(assetUrl("blog/"));
     return;
   }
   if (action === "sound-preview") audio.play("confirm");
