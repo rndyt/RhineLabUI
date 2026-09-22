@@ -73,7 +73,7 @@ export function indexPage(records, categories) {
   return page('文章目录', `<header><div class="eyebrow">RNDYT / PERSONAL ARCHIVE</div><h1>文章目录</h1><p class="description">工程文章、AI 实践与项目记录。</p>${readerBack('/')}</header>${records.some(r => r.preview) ? '<aside class="notice">当前包含示例内容，不代表真实经历或成果。</aside>' : ''}${categories.map(category => `<section class="collection"><h2>${escape(category)}</h2>${sorted.filter(post => post.category === category).map(post => `<a class="post-row" href="${post.source}"><span class="meta">${post.date} / ${post.id}</span><h3>${escape(post.title)}</h3><p>${escape(post.abstract)}</p><span class="meta">${post.readingMinutes} 分钟阅读 ↗</span></a>`).join('')}</section>`).join('')}`);
 }
 function readerBack(href) {
-  return `<a class="reader-back" href="${href}" aria-label="返回档案" title="返回档案">返回档案 <span aria-hidden="true">↗</span></a>`;
+  return `<a class="reader-back" href="${href}" aria-label="返回档案" title="返回档案">← 返回档案</a>`;
 }
 function page(title, content, description = 'rndyt 的个人博客', mainClass = '') {
   return `<!doctype html><html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="robots" content="noindex, nofollow"><meta name="description" content="${escape(description)}"><title>${escape(title)} · rndyt</title><link rel="icon" href="/favicon.svg"><link rel="stylesheet" href="/blog-reader.css"></head><body><main class="${mainClass}">${content}</main><footer>rndyt · 个人博客 · 三维档案 <a href="https://github.com/LBEILC/RhineLabUI">界面基于 RhineLabUI</a></footer></body></html>`;
