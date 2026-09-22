@@ -15,11 +15,25 @@
 .toc-label{font-size:12px;letter-spacing:.12em;color:#666459;margin-bottom:8px}
 .reader-sidebar .toc a{text-decoration:none;color:#666459}
 .reader-sidebar .toc a:hover{color:#785a31;text-decoration:underline}
+.reader-view-toggle{display:inline-flex;align-items:center;gap:8px;padding:8px 11px;border:1px solid #b5986b;background:#f0ede7;color:#5c482d;text-decoration:none;line-height:1.2}
+.reader-view-option{font-size:10px;letter-spacing:.1em;color:#a19e95}
+.reader-view-option.is-current{color:#24251f}
+.reader-view-track{position:relative;width:28px;height:14px;border:1px solid #aaa69a;border-radius:99px}
+.reader-view-track b{position:absolute;top:3px;right:3px;width:6px;height:6px;border-radius:50%;background:#785a31;transition:transform .2s}
+.reader-view-toggle.is-2d .reader-view-track b{transform:translateX(-14px)}
+.reader-view-copy{display:flex;flex-direction:column;gap:1px;margin-left:3px}
+.reader-view-copy strong{font-size:10px;letter-spacing:.1em;font-weight:400}
+.reader-view-copy small{font-size:10px;color:#807866;letter-spacing:0}
+.reader-view-toggle:hover{background:#785a31;color:#fff}
+.reader-view-toggle:hover .reader-view-option,.reader-view-toggle:focus-visible .reader-view-option{color:#fff}
+.reader-view-toggle:hover .reader-view-copy small{color:#f1ede6}
+.immersive.reader-view-toggle{margin-top:16px}
 .mobile-toc{display:none}
 .prose :is(h1,h2,h3,h4,h5,h6){scroll-margin-top:24px}
 @media(max-width:1000px){
   .reader-layout{display:block;width:min(780px,calc(100% - 40px))}
   .reader-topbar{align-items:flex-start;flex-wrap:wrap}
+  .reader-view-toggle{max-width:100%;flex-wrap:wrap}
   .reader-sidebar{display:none}
   .mobile-toc{display:block;margin:24px 0;border-block:1px solid #bdb8ae;font-size:14px}
   .mobile-toc summary{cursor:pointer;padding:12px 0;color:#666459}

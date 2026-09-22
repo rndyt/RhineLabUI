@@ -41,7 +41,8 @@
 :is([data-layout="compact"], [data-layout="portrait"]) :is(.key, .powered, .archive-hint, .hover-label) { display: none; }
 :is([data-layout="compact"], [data-layout="portrait"]) .system-footer { left: var(--edge); right: var(--edge); bottom: var(--bottom-edge); font-size: 8px; gap: 12px; }
 :is([data-layout="compact"], [data-layout="portrait"]) .system-footer > span:nth-child(2) { display: none; }
-:is([data-layout="compact"], [data-layout="portrait"]) .system-footer button { margin-left: auto; font-size: 9px; min-height: 28px; }
+:is([data-layout="compact"], [data-layout="portrait"]) .system-footer button { margin-left: 0; font-size: 9px; min-height: 28px; }
+:is([data-layout="compact"], [data-layout="portrait"]) .system-footer .footer-actions { margin-left: auto; gap: 14px; }
 :is([data-layout="compact"], [data-layout="portrait"]) .archive-callout { left: 53%; top: 35%; width: calc(47% - var(--edge)); }
 :is([data-layout="compact"], [data-layout="portrait"]) .eyebrow { font-size: 9px; letter-spacing: .4px; margin-bottom: 12px; }
 :is([data-layout="compact"], [data-layout="portrait"]) .eyebrow > span { margin-left: 5px; }

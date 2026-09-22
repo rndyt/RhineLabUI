@@ -661,12 +661,56 @@ button {
   font-style: normal;
   margin: 0 5px;
 }
+.footer-actions {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  margin-left: 0;
+}
 .system-footer button {
   font-size: 10px;
   letter-spacing: 1px;
 }
 .system-footer button:hover {
   color: #111;
+}
+.view-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  min-height: 28px;
+  color: #8c897f;
+  font-size: 9px !important;
+  letter-spacing: 1px !important;
+}
+.view-toggle-option {
+  color: #a19e95;
+  transition: color .2s;
+}
+.view-toggle-option.is-current {
+  color: #24251f;
+}
+.view-toggle-track {
+  position: relative;
+  width: 28px;
+  height: 14px;
+  margin: 0 1px;
+  border: 1px solid #aaa69a;
+  border-radius: 99px;
+}
+.view-toggle-track b {
+  position: absolute;
+  top: 3px;
+  right: 3px;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #785a31;
+  transition: transform .2s;
+}
+.view-toggle:hover .view-toggle-option,
+.view-toggle:focus-visible .view-toggle-option {
+  color: #785a31;
 }
 .detail-ui {
   position: absolute;
