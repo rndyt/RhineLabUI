@@ -339,6 +339,7 @@ button {
   bottom: 30px;
   left: 0;
   width: 100%;
+  display: none;
   font-size: 22px;
   text-align: center;
   color: #66645f;
