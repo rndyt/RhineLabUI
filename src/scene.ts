@@ -408,7 +408,7 @@ export class ArchiveScene {
       this.camera.updateMatrixWorld();
       this.model.position.copy(modelPosition);
       this.model.quaternion.copy(modelRotation);
-      this.decryption.update(0, false, this.reduced);
+      this.decryption.update(0, false, !this.motion.modelDecryption);
     }
   }
 
