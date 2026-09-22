@@ -18,6 +18,7 @@ test('Markdown sources, runtime content, standalone pages and exports agree', as
     assert.match(html, /class="reader-back/);
     assert.ok(html.includes('返回档案'));
     assert.doesNotMatch(html, /reader-view-toggle/);
+    assert.doesNotMatch(html, /← 文章目录/);
     assert.ok(html.includes(`/?post=${r.slug}`));
     assert.ok(html.includes('返回档案'));
     assert.ok(!html.includes('在三维档案中打开'));
