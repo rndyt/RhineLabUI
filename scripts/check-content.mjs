@@ -12,7 +12,7 @@ test('Markdown sources, runtime content, standalone pages and exports agree', as
     assert.equal(await readFile(new URL(`../public/archives/RNDYT-${r.id}.txt`, import.meta.url), 'utf8'), archiveText(r));
     const html = await readFile(new URL(`../dist/posts/${r.slug}/index.html`, import.meta.url), 'utf8');
     assert.ok(html.includes(r.bodyHtml));
-    assert.ok(html.includes(`/?post=${r.slug}`));
+    assert.ok(!html.includes('在三维档案中打开'));
     assert.ok(html.includes('noindex, nofollow'));
   }
 });

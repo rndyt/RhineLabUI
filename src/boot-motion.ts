@@ -16,6 +16,7 @@ const typed = (text: string, f: number, start: number, end: number) =>
           1 + Math.floor(((f - start) * (text.length - 1)) / (end - start)),
         ),
   );
+export const poweredText = "POWERED BY RHINELAB UI";
 const at = (f: number, frames: number[]) => frames.includes(f);
 const accessCounts = [
   1, 1, 3, 4, 5, 6, 9, 11, 12, 14, 17, 18, 19, 20, 22, 23, 25, 26,
@@ -67,7 +68,7 @@ export function bootMotion(appTime: number) {
     logoLetters: typed("RNDYT·LOG", f, 232, 255),
     authOpacity: f >= 281 && f < 487 ? 1 : 0,
     brand: [0, 1, 2].map((line) => brandTrack(frame, line)),
-    poweredLetters: typed("POWERED BY RNDYT", f, 279, 295).length,
+    poweredLetters: typed(poweredText, f, 279, 295).length,
     scanVisible: t >= 19.48 && t < 22.76,
     scan,
     scanOrbit,

@@ -70,7 +70,7 @@ $("#stage").innerHTML = `
     <div class="object-caption"><span id="object-id">NO.001</span><div>PERSONAL ARCHIVE</div><small>DRAG TO INSPECT <span>↔</span></small><button class="viewer-open" data-action="model-viewer">360° 查看文档模型 <span>↗</span></button></div>
     <article id="detail-content" class="detail-content"></article>
   </section>
-  <div class="powered">POWERED BY <b>RNDYT</b><i></i></div>
+  <div class="powered">POWERED BY <b>RHINELAB UI</b><i></i></div>
   <footer class="system-footer"><span><i class="status-light"></i> PUBLIC READING</span><span>RNDYT <i>／</i> <span id="clock">00:00:00</span></span><button data-action="replay" title="重播启动流程">REINITIALIZE ↗</button></footer>
   <div id="pwa-update-notice" class="pwa-update-notice" role="status" hidden><span>新版本已就绪</span><button data-pwa-action="update">更新并重启 ↻</button></div>
   <div id="modal-root"></div><div id="toast" class="toast" role="status"></div>

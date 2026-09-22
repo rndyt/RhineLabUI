@@ -1,4 +1,4 @@
-import { bootMotion } from "./boot-motion";
+import { bootMotion, poweredText } from "./boot-motion";
 import { bootMarkContour } from "./brand";
 
 const ns = "http://www.w3.org/2000/svg";
@@ -144,7 +144,7 @@ export class BootSequence {
     });
     this.opacity(".powered", s.poweredLetters > 0);
     this.el(".powered").style.clipPath =
-      `inset(0 ${100 * (1 - s.poweredLetters / 19)}% 0 0)`;
+      `inset(0 ${100 * (1 - s.poweredLetters / poweredText.length)}% 0 0)`;
     this.opacity(".scan", s.scanVisible);
     if (s.scanVisible) this.renderScan(s);
     this.opacity(".welcome", s.welcomeVisible ? s.welcomeOpacity : 0);
