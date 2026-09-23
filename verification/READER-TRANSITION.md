@@ -1,0 +1,20 @@
+# 档案详情 → 文章阅读过渡
+
+2026-09-23 第一版体验。
+
+- 保留静态文章和普通链接，使用原生跨文档 View Transition；共享标题约 460ms 移动、交叉淡入，背景从详情一侧展开。700px 以下改为自下向上揭示。
+- 旧界面 160ms 淡出，正文延后 180ms、目录延后 220ms 出现；返回过渡约 280ms。三维模型坐标、抽取与归位规则不变。
+- 只对同一 slug 的 `/?post=…` 与 `/posts/…/` 启用。外链、目录页和无关文章不套用共享标题。修饰键和新窗口链接保留浏览器行为。
+- 普通直达或不支持跨文档过渡时使用轻淡入；减少动态效果或关闭 surfaceTransitions 时直接展示。本站完整动效选择优先于系统偏好。
+- 返回按钮优先使用原历史记录；BFCache 可保留场景。冷返回仍需要载入场景，因此跳过加载画面的共享过渡。sessionStorage 补充恢复详情页签与滚动位置，文章位置在重新从档案进入时恢复；锚点定位优先。
+- 新增 CSS/JS 纳入完整 PWA 缓存，离线版本保持一致。
+
+## 验证
+
+- `npm run build`：TypeScript、Astro 静态输出及 PWA 完整版本生成通过。保留既有大包体积提示。
+- Codex 内置 Chromium，正式构建本地 HTTP 服务：详情进入文章、返回原档案成功；截取过渡中间帧确认标题移动、背景展开；结束后 crossing 状态清除。
+- 设置“减少”后进入文章：`data-reader-motion=off`，正文容器 `animation-name=none`。验证后恢复“完整”。
+- 390×844 视口：向上揭示，长标题和正文布局可读。选择详情“目录”页签，进入再返回，`aria-selected=true`。
+- 本次不是 iPhone / Safari 实机验证。冷返回的三维重载与平台是否保留 BFCache 有关。
+
+API 依据：[MDN 跨文档过渡生命周期](https://developer.mozilla.org/en-US/docs/Web/API/View_Transition_API/Using)。

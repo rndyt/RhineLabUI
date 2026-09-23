@@ -503,6 +503,14 @@ function renderDetail() {
   $("#detail-content").setAttribute("tabindex", "-1");
   documentDecryption.reset($("#detail-content"), !motionActive("documentReveal") || scene.decryptionFrame.phase === "clear");
   setTab(activeTab, false);
+  try {
+    const returning = JSON.parse(sessionStorage.getItem("reader-detail-return") ?? "null");
+    if (returning?.slug === r.slug) {
+      sessionStorage.removeItem("reader-detail-return");
+      if (["overview", "notes", "history"].includes(returning.tab)) setTab(returning.tab, false);
+      requestAnimationFrame(() => { $("#detail-content").scrollTop = Number(returning.scroll) || 0; });
+    }
+  } catch { /* Storage is optional; the archive URL still restores selection. */ }
 }
 function overview() {
   const r = records[selected];
@@ -1178,3 +1186,10 @@ Object.assign(window, {
   },
 });
 if (import.meta.hot) import.meta.hot.dispose(() => audio.dispose());
+
+window.addEventListener("reader-open", () => {
+  audio.play("page-open");
+  try {
+    sessionStorage.setItem("reader-detail-return", JSON.stringify({ slug: records[selected].slug, tab: activeTab, scroll: $("#detail-content").scrollTop }));
+  } catch { /* Private browsing may disable storage. */ }
+});

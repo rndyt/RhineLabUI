@@ -1,0 +1,117 @@
+@view-transition {
+  navigation: auto;
+}
+html[data-reader-motion="off"]::view-transition-group(*) {
+  animation-duration: 0s;
+}
+::view-transition-group(*) {
+  animation-duration: 460ms;
+  animation-timing-function: cubic-bezier(0.22, 0.75, 0.18, 1);
+}
+::view-transition-old(root) {
+  animation: reader-out 160ms ease-out both;
+}
+::view-transition-new(root) {
+  animation: reader-open 460ms cubic-bezier(0.22, 0.75, 0.18, 1) both;
+}
+::view-transition-old(article-title),
+::view-transition-new(article-title) {
+  height: 100%;
+  mix-blend-mode: normal;
+}
+::view-transition-old(article-title) {
+  animation: reader-out 220ms ease both;
+}
+::view-transition-new(article-title) {
+  animation: reader-in 300ms 100ms ease both;
+}
+html[data-reader-direction="back"]::view-transition-group(*) {
+  animation-duration: 280ms;
+}
+html[data-reader-direction="back"]::view-transition-new(root) {
+  animation: reader-in 280ms ease both;
+}
+html[data-reader-direction="back"]::view-transition-old(root) {
+  animation: reader-close 220ms ease both;
+}
+html[data-reader-motion="on"].reader-enter .reader-column {
+  animation: reader-content 300ms ease-out both;
+}
+html[data-reader-motion="on"].reader-enter .reader-sidebar {
+  animation: reader-content 380ms ease-out both;
+}
+.reader-column > header {
+  border-top: 1px solid #bdb8ae;
+  padding-top: 20px;
+}
+@keyframes reader-out {
+  to {
+    opacity: 0;
+  }
+}
+@keyframes reader-in {
+  from {
+    opacity: 0;
+  }
+}
+@keyframes reader-open {
+  from {
+    opacity: 0;
+    clip-path: inset(5% 0 5% 48%);
+  }
+  35% {
+    opacity: 1;
+  }
+  to {
+    opacity: 1;
+    clip-path: inset(0);
+  }
+}
+@keyframes reader-close {
+  to {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+}
+@keyframes reader-content {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@media (max-width: 700px) {
+  @keyframes reader-open {
+    from {
+      opacity: 0;
+      clip-path: inset(42% 0 0);
+    }
+    35% {
+      opacity: 1;
+    }
+    to {
+      opacity: 1;
+      clip-path: inset(0);
+    }
+  }
+}
+
+.reader-crossing .prose {
+  view-transition-name: article-body;
+}
+.reader-crossing .reader-sidebar {
+  view-transition-name: article-outline;
+}
+::view-transition-new(article-body) {
+  animation: reader-content 240ms 180ms ease-out both;
+}
+::view-transition-new(article-outline) {
+  animation: reader-content 240ms 220ms ease-out both;
+}
+::view-transition-old(article-body),
+::view-transition-old(article-outline) {
+  animation: reader-out 160ms ease-out both;
+}
