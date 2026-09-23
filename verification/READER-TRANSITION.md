@@ -18,3 +18,7 @@
 - 本次不是 iPhone / Safari 实机验证。冷返回的三维重载与平台是否保留 BFCache 有关。
 
 API 依据：[MDN 跨文档过渡生命周期](https://developer.mozilla.org/en-US/docs/Web/API/View_Transition_API/Using)。
+
+## 节奏调整
+
+用户体验后反馈过快：进入由 460ms 放慢至 700ms，返回由 280ms 放慢至 420ms；标题淡入、正文与目录错峰等同步放慢约 1.5 倍。缓动前段略放缓，保留原有展开方向和减少动态效果行为。构建验证通过。

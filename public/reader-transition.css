@@ -5,14 +5,14 @@ html[data-reader-motion="off"]::view-transition-group(*) {
   animation-duration: 0s;
 }
 ::view-transition-group(*) {
-  animation-duration: 460ms;
-  animation-timing-function: cubic-bezier(0.22, 0.75, 0.18, 1);
+  animation-duration: 700ms;
+  animation-timing-function: cubic-bezier(0.25, 0.65, 0.2, 1);
 }
 ::view-transition-old(root) {
-  animation: reader-out 160ms ease-out both;
+  animation: reader-out 240ms ease-out both;
 }
 ::view-transition-new(root) {
-  animation: reader-open 460ms cubic-bezier(0.22, 0.75, 0.18, 1) both;
+  animation: reader-open 700ms cubic-bezier(0.25, 0.65, 0.2, 1) both;
 }
 ::view-transition-old(article-title),
 ::view-transition-new(article-title) {
@@ -20,25 +20,25 @@ html[data-reader-motion="off"]::view-transition-group(*) {
   mix-blend-mode: normal;
 }
 ::view-transition-old(article-title) {
-  animation: reader-out 220ms ease both;
+  animation: reader-out 330ms ease both;
 }
 ::view-transition-new(article-title) {
-  animation: reader-in 300ms 100ms ease both;
+  animation: reader-in 450ms 150ms ease both;
 }
 html[data-reader-direction="back"]::view-transition-group(*) {
-  animation-duration: 280ms;
+  animation-duration: 420ms;
 }
 html[data-reader-direction="back"]::view-transition-new(root) {
-  animation: reader-in 280ms ease both;
+  animation: reader-in 420ms ease both;
 }
 html[data-reader-direction="back"]::view-transition-old(root) {
-  animation: reader-close 220ms ease both;
+  animation: reader-close 330ms ease both;
 }
 html[data-reader-motion="on"].reader-enter .reader-column {
-  animation: reader-content 300ms ease-out both;
+  animation: reader-content 450ms ease-out both;
 }
 html[data-reader-motion="on"].reader-enter .reader-sidebar {
-  animation: reader-content 380ms ease-out both;
+  animation: reader-content 570ms ease-out both;
 }
 .reader-column > header {
   border-top: 1px solid #bdb8ae;
@@ -106,12 +106,12 @@ html[data-reader-motion="on"].reader-enter .reader-sidebar {
   view-transition-name: article-outline;
 }
 ::view-transition-new(article-body) {
-  animation: reader-content 240ms 180ms ease-out both;
+  animation: reader-content 360ms 270ms ease-out both;
 }
 ::view-transition-new(article-outline) {
-  animation: reader-content 240ms 220ms ease-out both;
+  animation: reader-content 360ms 330ms ease-out both;
 }
 ::view-transition-old(article-body),
 ::view-transition-old(article-outline) {
-  animation: reader-out 160ms ease-out both;
+  animation: reader-out 240ms ease-out both;
 }
